@@ -28,25 +28,55 @@ class XML_Tree
         TreeNode* newNode= new TreeNode();
         newNode->_tag_name=_tag_name;
         newNode->_tag_data=_tag_data;
-        //init children to null??
         return newNode;
     }
-    void Insert( string _tag_name , string _tag_data)
-    {
-        
-    }
-     
-    void postOrderTraversal(TreeNode *node)
-    {
-        
     
-       
+    void InsertRoot(string _tag_name , string _tag_data)
+    {
+        if(root == nullptr)
+        {
+            root = GetNewNode(_tag_name, _tag_data);
+        }
+        else
+        {
+            cout << "Root already exists." << endl;
+        }
+    }
+    
+    void InsertChild(TreeNode* parent, string _tag_name , string _tag_data)
+    {
+        TreeNode* childNode = GetNewNode(_tag_name, _tag_data);
+        parent->children.push_back(childNode);
     }
     
     void preOrderTraversal(TreeNode *node)
     {
+        if(node == nullptr)
+            return;
         
-       
+        //Edit Here -------------------------------- ----------------------------------------------------
+        cout << node->_tag_name << ": " << node->_tag_data << endl;
+        
+        for(auto child : node->children)
+        {
+            preOrderTraversal(child);
+        }
     }
-
 };
+
+
+
+
+ 
+    // void postOrderTraversal(TreeNode *node)
+    // {
+    //     if(node == nullptr)
+    //         return;
+        
+    //     for(auto child : node->children)
+    //     {
+    //         postOrderTraversal(child);
+    //     }
+        
+    //     cout << node->_tag_name << ": " << node->_tag_data << endl;
+    // }

@@ -24,16 +24,17 @@ int main()
     }
     //_xml_data.erase(std::remove_if(_xml_data.begin(), _xml_data.end(), "\t"), _xml_data.end());
     
-    // regex _tag_regex("<([^<>]+)>");
-    // sregex_iterator _tag_iterator(_xml_data.begin(),_xml_data.end(),_tag_regex);
-    // sregex_iterator _endtag_iterator; 
+    regex _tag_regex("<([^<>]+)>");
+    sregex_iterator _tag_iterator(_xml_data.begin(),_xml_data.end(),_tag_regex);
+    sregex_iterator _endtag_iterator; 
    
-    // //"\\(([^)]+)\\)"
-    // while (_tag_iterator !=_endtag_iterator ) {
-    //     std::smatch match = *_tag_iterator;
-    //     cout<<match.str()<<endl;
-    //     ++_tag_iterator;
-    // }
+    //"\\(([^)]+)\\)"
+    while (_tag_iterator !=_endtag_iterator ) {
+        std::smatch match = *_tag_iterator;
+        //Here
+        cout<<match.str()<<endl;
+        ++_tag_iterator;
+    }
 
     
     // regex _info_regex( "<(topic|id|name|body)>(.*?)</(topic|id|name|body)>" );
