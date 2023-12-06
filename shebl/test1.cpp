@@ -55,18 +55,10 @@ using namespace std;
 
 //     return 0;
 // }
-int main()
+XML_Tree makeTree(string _xml_data )
 {
-    ifstream _xml_file("C:\\Users\\youssef\\Desktop\\programing\\DS_c++\\Project\\sample.xml");
 
-    string _xml_data,tmp;
-    if( _xml_file.is_open())
-    {
-        while (getline(_xml_file,tmp))
-        {
-            _xml_data=_xml_data+tmp+'\n';
-        }
-    }
+
 
     XML_Tree tree;
     TreeNode* currentNode = nullptr;
@@ -77,7 +69,7 @@ int main()
 
     while (_tag_iterator !=_endtag_iterator ) {
         std::smatch match = *_tag_iterator;
-        string tag = match.str(1);
+        string tag = match.str();
 
         // Check if this is a start tag or an end tag
         if(tag[1] != '/') // Start tag
@@ -102,7 +94,24 @@ int main()
 
         ++_tag_iterator;
     }
+    return tree;
 
+}
+ 
+int main()
+{
+    ifstream _xml_file("C:\\Users\\youssef\\Desktop\\programing\\DS_c++\\Project\\sample.xml");
+
+    string _xml_data,tmp;
+    if( _xml_file.is_open())
+    {
+        while (getline(_xml_file,tmp))
+        {
+            _xml_data=_xml_data+tmp+'\n';
+        }
+    }
+
+    XML_Tree tree= makeTree(_xml_data);
     // Now you can use your tree
     // For example, print the tree using pre-order traversal
     tree.preOrderTraversal(tree.root);
