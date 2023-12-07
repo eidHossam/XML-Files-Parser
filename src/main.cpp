@@ -7,24 +7,18 @@
 #include <list>
 #include <forward_list>
 #include "tree.h"
+#include "XML_Parser.h"
+
 
 using namespace std;
 
-
-
 int main()
 {
-    ifstream _xml_file("shebl/sample.xml");
+    string _xml_data;
+    XML_Parser parser;
 
-    string _xml_data,tmp;
-    if( _xml_file.is_open())
-    {
-        while (getline(_xml_file,tmp))
-        {
-            _xml_data=_xml_data+tmp+'\n';
-        }
-    }
+    _xml_data = parser.fix_xml_data("src/sample.xml");
 
-    cout << "Done!." << endl;
+    cout << _xml_data << endl;
     return 0;
 }
