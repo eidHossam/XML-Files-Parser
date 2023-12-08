@@ -4,8 +4,12 @@
 
 class XML_Tree
 {
+private:
+    void preOrderTraversalHelper(TreeNode *node);
 public:
-    TreeNode * root = NULL;
+    TreeNode * root;
+
+    XML_Tree();
     
     void InsertRoot(string _tag_name , string _tag_data);
 
@@ -13,5 +17,4 @@ public:
 
     void preOrderTraversal();
     
-    void preOrderTraversalHelper(TreeNode *node);
 };

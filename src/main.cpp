@@ -19,6 +19,8 @@ int main()
 
     _xml_data = parser.fix_xml_data("src/sample.xml");
 
-    cout << _xml_data << endl;
+    XML_Tree tree = parser.build_xml_tree(_xml_data);
+
+    tree.preOrderTraversal();
     return 0;
 }

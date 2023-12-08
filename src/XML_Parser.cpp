@@ -64,7 +64,7 @@ bool XML_Parser::has_errors(string data)
     return error_flag; 
 }
 
-void trim(string& str) {
+void XML_Parser::trim(string& str) {
     size_t first = str.find_first_not_of(" \t\n\r");
     size_t last = str.find_last_not_of(" \t\n\r");
     if (first != std::string::npos && last != std::string::npos)
@@ -183,53 +183,67 @@ string XML_Parser::fix_xml_data(string file_location)
     return fixed_xml_data;
 }
 
-XML_Tree XML_Parser::check_consistency(string data)
+string XML_Parser::xml_format(string xml_data) 
+{
+
+     return string(); 
+}
+
+XML_Tree XML_Parser::build_xml_tree(string data)
 {    
     XML_Tree tree;
     TreeNode* currentNode = NULL;
 
-    stack<string> tags;
     regex _tag_regex("<([^<>]+)>");
 
-    sregex_iterator _tag_iterator(data.begin(),data.end(),_tag_regex);
-    sregex_iterator _endtag_iterator; 
 
-    while (_tag_iterator !=_endtag_iterator ) {
-        smatch match = *_tag_iterator;
-       
-        string tag = match.str();
+    string tmp;
+    istringstream stream(data); /*Convert the string into a stream to read it line by line*/
 
-        // Check if this is a start tag or an end tag
-        if(tag[1] != '/') // Start tag
+    while(getline(stream, tmp))
+    {
+
+        sregex_iterator _tag_iterator(tmp.begin(),tmp.end(),_tag_regex);
+        sregex_iterator _endtag_iterator; 
+
+        /*If there is no tags then all of the line is data*/
+        if(_tag_iterator == _endtag_iterator && !tmp.empty())
         {
-            string tag_name = tag.substr(1, tag.size() - 2); // Remove the angle brackets
-            tags.push(tag_name);
-
-            if(currentNode == NULL) // If there is no current node, this is the root
-            {
-                tree.InsertRoot(tag, "");
-                currentNode = tree.root;
-            }
-            else // Otherwise, this is a child node
-            {
-                tree.InsertChild(currentNode, tag, "");
-                currentNode = currentNode->children.back();
-            }
-        }
-        else // End tag
-        {
-            string tag_name = tag.substr(2, tag.size() - 3); // Remove the angle brackets
-            /*If the type of the opening tag doesn't match the type of the closing tag then there is an error*/
-            cout << tag_name << " " <<  tags.top() << endl;
-            if(tag_name == tags.top())
-            {
-                tags.pop();
-            }
-            
-            currentNode = currentNode->parent; // Move up to the parent node            
+            trim(tmp);
+            currentNode->_tag_data += tmp;
         }
 
-        ++_tag_iterator;
+        while (_tag_iterator !=_endtag_iterator ) {
+            smatch match = *_tag_iterator;
+
+            string tag = match.str();
+
+            // Check if this is a start tag or an end tag
+            if(tag[1] != '/') // Start tag
+            {
+                /*Check if this a leaveNode node by checking if it contains data*/
+                string data_field = extract_data_field(tmp);
+                
+                string tag_name = tag.substr(1, tag.size() - 2); // Remove the angle brackets
+
+                if(currentNode == NULL) // If there is no current node, this is the root
+                {
+                    currentNode = TreeNode::GetNewNode(tag_name, data_field);
+                    tree.root = currentNode;
+                }
+                else // Otherwise, this is a child node
+                {
+                    tree.InsertChild(currentNode, tag_name, data_field);
+                    currentNode = currentNode->children.back();
+                }
+            }
+            else // End tag
+            {
+                currentNode = currentNode->parent; // Move up to the parent node            
+            }
+
+            ++_tag_iterator;
+        }
     }
     return tree;
 }

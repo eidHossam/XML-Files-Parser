@@ -6,6 +6,10 @@ void XML_Tree::InsertRoot(string _tag_name, string _tag_data) {
   }
 }
 
+XML_Tree::XML_Tree(){
+  root = NULL;
+}
+
 void XML_Tree::InsertChild(TreeNode * parent, string _tag_name, string _tag_data) {
   TreeNode * childNode = TreeNode::GetNewNode(_tag_name, _tag_data);
   childNode -> parent = parent; // Set the parent of the child node
