@@ -1,11 +1,32 @@
 #include "XML_Parser.h"
 
-XML_Parser::XML_Parser() {
+/** @defgroup Local DEFINES
+  * @{
+  */
+#define FORMAT_RAW   0
+#define FORMAT_PRETTY 1
+/**
+  * @}
+  */
+
+XML_Parser::XML_Parser(string file_location) {
+    this->file_location = file_location;
     original_xml_data = "";
     fixed_xml_data = "";
+    file_tree = NULL;
 }
 
-string XML_Parser::get_xml_data(string file_location) {
+string XML_Parser::get_raw_xml_data()
+{
+    return get_xml_data(FORMAT_RAW);
+}
+
+string XML_Parser::get_formatted_xml_data()
+{
+    return get_xml_data(FORMAT_PRETTY);
+}
+
+string XML_Parser::get_xml_data(int formatting) {
 
     ifstream _xml_file(file_location);
 
@@ -13,7 +34,13 @@ string XML_Parser::get_xml_data(string file_location) {
     if (_xml_file.is_open()) {
         while (getline(_xml_file, tmp)) 
         {
-            _xml_data = _xml_data + tmp + '\n';
+            if(formatting == FORMAT_RAW)
+            {
+                trim(tmp);
+                _xml_data = _xml_data + tmp;
+            }else{
+                _xml_data = _xml_data + tmp + "\n";
+            }
         }
     }
 
@@ -21,15 +48,28 @@ string XML_Parser::get_xml_data(string file_location) {
     return _xml_data;
 }
 
-bool XML_Parser::has_errors(string data) 
+bool XML_Parser::has_errors() 
 {
+
+    /*If we already fixed the file then no need to check again*/
+    if(fixed_xml_data != "")
+    {
+        return false;
+    }
+
+    /*If we didn't parse the file yet then parse it*/
+    if(original_xml_data == "")
+    {
+        get_formatted_xml_data();
+    }
+
     bool error_flag = false;
     
     stack<string> tags;
 
     regex _tag_regex("<([^<>]+)>");
     
-    sregex_iterator _tag_iterator(data.begin(),data.end(),_tag_regex);
+    sregex_iterator _tag_iterator(original_xml_data.begin(),original_xml_data.end(),_tag_regex);
     sregex_iterator _endtag_iterator; 
 
     while (_tag_iterator !=_endtag_iterator ) {
@@ -97,8 +137,15 @@ string XML_Parser::extract_data_field(string line)
     return data_field;
 }
 
-string XML_Parser::fix_xml_data(string file_location) 
+string XML_Parser::fix_xml_data() 
 { 
+    //if the file doesn't have errors then return 
+    if(!has_errors())
+    {
+        fixed_xml_data = original_xml_data;
+        return fixed_xml_data;
+    }
+
     /*Open the XML file*/
     ifstream _xml_file(file_location);
 
@@ -183,22 +230,68 @@ string XML_Parser::fix_xml_data(string file_location)
     return fixed_xml_data;
 }
 
-string XML_Parser::xml_format(string xml_data) 
-{
+void XML_Parser::printXML(TreeNode* node, int depth) {
+    for (int i = 0; i < depth; ++i) {
+        formated_xml_data += "    "; // 4 spaces for each level of depth
+    }
 
-     return string(); 
+    formated_xml_data += "<" + node->_tag_name + ">";
+    
+    if (!node->_tag_data.empty())
+    {
+        formated_xml_data += node->_tag_data;
+    } else if (!node->children.empty()) 
+    {
+        formated_xml_data += "\n";
+        for (const auto& child : node->children)
+        {
+            printXML(child, depth + 1);
+        }
+        for (int i = 0; i < depth; ++i) {
+            formated_xml_data += "    ";
+        }
+    }
+
+    formated_xml_data += "</" + node->_tag_name + ">\n";
 }
 
-XML_Tree XML_Parser::build_xml_tree(string data)
+string XML_Parser::xml_format() 
+{   
+    if(formated_xml_data != "")
+    {
+        return formated_xml_data;
+    }
+    /*1 - Build the tree */
+    build_xml_tree();
+
+    printXML(file_tree->root, 0);
+    return formated_xml_data; 
+}
+
+XML_Tree* XML_Parser::build_xml_tree()
 {    
-    XML_Tree tree;
+    /*If we already built the tree once don't do it again*/
+    if(file_tree)
+    {
+        return file_tree;
+    }
+
+    /*If we didn't parse the file yet then parse it*/
+    if(original_xml_data == "")
+    {
+        get_formatted_xml_data();
+    }
+
+    fix_xml_data();
+
+    file_tree = new XML_Tree();
     TreeNode* currentNode = NULL;
 
     regex _tag_regex("<([^<>]+)>");
 
 
     string tmp;
-    istringstream stream(data); /*Convert the string into a stream to read it line by line*/
+    istringstream stream(fixed_xml_data); /*Convert the string into a stream to read it line by line*/
 
     while(getline(stream, tmp))
     {
@@ -229,11 +322,11 @@ XML_Tree XML_Parser::build_xml_tree(string data)
                 if(currentNode == NULL) // If there is no current node, this is the root
                 {
                     currentNode = TreeNode::GetNewNode(tag_name, data_field);
-                    tree.root = currentNode;
+                    file_tree->root = currentNode;
                 }
                 else // Otherwise, this is a child node
                 {
-                    tree.InsertChild(currentNode, tag_name, data_field);
+                    file_tree->InsertChild(currentNode, tag_name, data_field);
                     currentNode = currentNode->children.back();
                 }
             }
@@ -245,7 +338,22 @@ XML_Tree XML_Parser::build_xml_tree(string data)
             ++_tag_iterator;
         }
     }
-    return tree;
+
+    return file_tree;
 }
 
+string XML_Parser::get_original_xml_data(){
+    /*If we didn't parse the file yet then parse it*/
+    if(original_xml_data == "")
+    {
+        get_formatted_xml_data();
+    }
 
+    return original_xml_data;
+}
+
+string XML_Parser::get_fixed_xml_data(){
+    fix_xml_data();
+
+    return fixed_xml_data; 
+}
