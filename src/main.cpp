@@ -15,12 +15,10 @@ using namespace std;
 int main()
 {
     string _xml_data;
-    XML_Parser parser;
+    XML_Parser parser("src/sample.xml");
 
-    _xml_data = parser.fix_xml_data("src/sample.xml");
+    _xml_data = parser.xml_format();
 
-    XML_Tree tree = parser.build_xml_tree(_xml_data);
-
-    tree.preOrderTraversal();
+    cout << _xml_data;
     return 0;
 }
