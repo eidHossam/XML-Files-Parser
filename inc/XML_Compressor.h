@@ -1,24 +1,18 @@
-#ifndef XML_COMPRESSOR_H_
-#define XML_COMPRESSOR_H_
+#ifndef COMPRESSOR_H_
+#define COMPRESSOR_H_
 
-#include "Node.h"
-#include <iostream>
 #include <unordered_map>
 #include <queue>
 #include <string>
-
-using namespace std;
+#include "Node.h"
 
 struct comp {
-    bool operator()(Node* l, Node* r) {
-        return l->freq > r->freq;
-    }
+    bool operator()(Node* l, Node* r);
 };
 
-Node* getNode(char ch, int freq, Node* left, Node* right);
-void Huffman_Encode(Node* root, string str, unordered_map<char, string>& huffmanCode);
-void Calculate_Frequency_Map(unordered_map<char, int>& freq, string text);
-Node* Create_Huffman_Tree(priority_queue<Node*, vector<Node*>, comp>& PriorityQ, unordered_map<char, int>& freq);
-string Huffman_Compress(string text);
+void Huffman_Encode(Node* root, std::string str, std::unordered_map<char, std::string>& huffmanCode);
+void Calculate_Frequency_Map(std::unordered_map<char, int>& freq, std::string text);
+Node* Create_Huffman_Tree(std::priority_queue<Node*, std::vector<Node*>, comp>& PriorityQ, std::unordered_map<char, int>& freq);
+std::string Huffman_Compress(std::string text);
 
 #endif
