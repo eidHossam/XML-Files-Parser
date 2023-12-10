@@ -1,5 +1,5 @@
-#ifndef COMPRESSOR_H_
-#define COMPRESSOR_H_
+#ifndef XML_COMPRESSOR_H_
+#define XML_COMPRESSOR_H_
 
 #include <unordered_map>
 #include <queue>

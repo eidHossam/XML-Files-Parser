@@ -1,12 +1,10 @@
 #ifndef XML_DECOMPRESSOR_H_
 #define XML_DECOMPRESSOR_H_
 
-#include "Node.h"
 #include <string>
+#include "node.h"
 
-using namespace std;
-
-string Huffman_Decompress(string text);
-char Huffman_Decode(Node* root, int& index, string str);
+char Huffman_Decode(Node* root, int& index, std::string str);
+std::string Huffman_Decompress(std::string text);
 
 #endif
