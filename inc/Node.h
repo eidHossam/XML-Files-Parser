@@ -7,4 +7,8 @@ struct Node {
     Node* left, * right;
 };
 
+extern Node* root;
+
+Node* getNode(char ch, int freq, Node* left, Node* right);
+
 #endif
