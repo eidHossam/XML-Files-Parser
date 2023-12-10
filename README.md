@@ -1,6 +1,6 @@
 # XML-Files-Parser
 
 ## Time Complexity of Compressing using Huffman encoding is : 
-#### O(nlog(n)) //Where n is the number of ``distinct`` characters in the origianl text
+#### O(n log(n)) //Where n is the number of characters in the original text
 ## Time Complexity of Decompressing the huffman codes is :
-#### O(n*k), where n is the size of the compressed text(Compressed size), k is the number of ``distinct`` characters in the original text
+#### O(n log (m)), where n is the size of the compressed text and m is the number of unique characters in the original text.
