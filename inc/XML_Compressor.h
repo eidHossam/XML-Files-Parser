@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <queue>
 #include <string>
-#include "node.h"
+#include "Node.h"
 
 class Compressor {
 public:

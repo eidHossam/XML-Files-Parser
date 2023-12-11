@@ -2,7 +2,7 @@
 #define XML_DECOMPRESSOR_H_
 
 #include <string>
-#include "node.h"
+#include "Node.h"
 
 class Decompressor {
 public:
