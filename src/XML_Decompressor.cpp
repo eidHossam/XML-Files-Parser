@@ -4,7 +4,7 @@
  * This file defines the methods of the Decompressor class, responsible
  * for decompressing XML data using the Huffman tree provided by the Compressor.
  */
-#include "XML_Decompressor.h"
+#include "../inc/XML_Decompressor.h"
 
 Decompressor::Decompressor() : root(nullptr) {}
 

@@ -5,7 +5,7 @@
  * XML compression using Huffman Coding. It creates a Huffman tree, encodes
  * XML data, and provides the root of the tree for decompression.
  */
-#include "XML_Compressor.h"
+#include "../inc/XML_Compressor.h"
 
 Compressor::Compressor() : root(nullptr) {}
 

@@ -6,7 +6,7 @@
  * using Huffman Coding. It utilizes Compressor and Decompressor objects.
  * NOTE : Huffman encoding is a loseless compressing technique that is general for all texts not just XML but here we will use it to compress and decompress XML Files
  */
-#include "Huffman_Coding.h"
+#include "../inc/Huffman_Coding.h"
 
 HuffmanCoding::HuffmanCoding() : compressor(), decompressor() {}
 

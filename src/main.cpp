@@ -6,7 +6,7 @@
  */
 #include <iostream>
 #include <fstream>
-#include "huffman_coding.h"
+#include "../inc/Huffman_Coding.h"
 
 std::string get_xml_data(const std::string& file_location) {
     std::ifstream xml_file(file_location);
