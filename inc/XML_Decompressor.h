@@ -4,7 +4,15 @@
 #include <string>
 #include "node.h"
 
-char Huffman_Decode(Node* root, int& index, std::string str);
-std::string Huffman_Decompress(std::string text);
+class Decompressor {
+public:
+    Decompressor();
+    std::string decompress(const std::string& text);
+	void Pass_Tree(Node * root);
+private:
+    Node* root;
+    char Huffman_Decode(Node* root, int& index, const std::string& str);
+};
 
-#endif
+
+#endif 
