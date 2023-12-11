@@ -3,7 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${default}",
+                "C:/msys64/mingw64/include/c++/13.2.0/x86_64-w64-mingw32",
+                "C:\\Users\\youssef\\Desktop\\programing\\DS_c++\\Project\\XML-Files-Parser-Hossam_Branch\\inc"
             ],
             "defines": [
                 "_DEBUG",
@@ -11,10 +13,10 @@
                 "_UNICODE"
             ],
             "windowsSdkVersion": "10.0.19041.0",
-            "compilerPath": "C:/msys64/ucrt64/bin/g++.exe",
             "cStandard": "c17",
-            "cppStandard": "c++17",
-            "intelliSenseMode": "windows-msvc-x64"
+            "intelliSenseMode": "${default}",
+            "cppStandard": "c++23",
+            "compilerPath": "C:/msys64/mingw64/bin/g++.exe"
         }
     ],
     "version": 4
