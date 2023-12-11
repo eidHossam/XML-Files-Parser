@@ -11,3 +11,4 @@ TreeNode* TreeNode::GetNewNode(string _tag_name , string _tag_data)
     TreeNode* newNode= new TreeNode(_tag_name, _tag_data);
     return newNode;
 }
+   

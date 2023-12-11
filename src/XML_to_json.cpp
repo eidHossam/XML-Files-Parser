@@ -55,7 +55,7 @@ string XML_to_json:: json_string()
     if(file_tree_json->root==nullptr)
     {
       json_output+="}";
-      return;
+      return json_output;
     }
     preOrderTraversalVectorFill(file_tree_json->root);
     int counter=0;
@@ -67,5 +67,6 @@ string XML_to_json:: json_string()
       counter++;
 
     }
+    return json_output;
 
 }

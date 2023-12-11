@@ -19,6 +19,6 @@ int main()
 
     _xml_data = parser.xml_format();
 
-    cout << _xml_data;
+    cout << _xml_data<<"??";
     return 0;
 }

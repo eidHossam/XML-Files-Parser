@@ -8,7 +8,7 @@
 /**
   * @}
   */
-
+XML_Parser::XML_Parser(){}
 XML_Parser::XML_Parser(string file_location) {
     this->file_location = file_location;
     original_xml_data = "";

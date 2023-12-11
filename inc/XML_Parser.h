@@ -23,6 +23,7 @@ private:
 
     void printXML(TreeNode* node, int depth);
 public:
+    XML_Parser();
     XML_Parser(string file_location);
     
     string get_raw_xml_data();

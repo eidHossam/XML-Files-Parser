@@ -29,4 +29,4 @@ void XML_Tree::preOrderTraversalHelper(TreeNode * node) {
   for (auto child: node -> children) {
     preOrderTraversalHelper(child);
   }
-}
+}   
