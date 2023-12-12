@@ -24,7 +24,7 @@ void XML_Tree::preOrderTraversalHelper(TreeNode * node) {
   if (node == NULL)
     return;
 
-  cout << node -> _tag_name << ": " << node -> _tag_data << endl;
+  cout << node -> _tag_name << "  " << node -> _tag_data  << "  " << node->_node_level << endl;
 
   for (auto child: node -> children) {
     preOrderTraversalHelper(child);
