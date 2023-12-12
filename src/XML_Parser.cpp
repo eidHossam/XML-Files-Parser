@@ -64,8 +64,8 @@ string XML_Parser::get_xml_data(int formatting) {
 }
 
 void XML_Parser::trim(string& str) {
-    size_t first = str.find_first_not_of(" \t\n\r");
-    size_t last = str.find_last_not_of(" \t\n\r");
+    std::size_t first = str.find_first_not_of(" \t\n\r");
+    std::size_t last = str.find_last_not_of(" \t\n\r");
     if (first != std::string::npos && last != std::string::npos)
         str = str.substr(first, last - first + 1);
     else
@@ -156,7 +156,7 @@ string XML_Parser::get_formatted_xml_data()
  */
 string XML_Parser::highlight_errors()
 {
-    
+   return "string x"; 
 }
 
 /**

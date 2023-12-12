@@ -1,0 +1,31 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "compilerPathInCppPropertiesJson": "C:\\msys64\\mingw64\\bin\\g++.exe",
+            "includePath": [
+                "C:\\msys64\\mingw64\\include",
+                "${workspaceFolder}/inc"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.19041.0",
+            "cStandard": "c17",
+            "cppStandard": "c++23",
+            "intelliSenseMode": "${default}",
+            "mergeConfigurations": false,
+            "compilerPath": "C:\\msys64\\mingw64\\bin\\g++.exe",
+            "browse": {
+                "path": [
+                   "C:/msys64/mingw64/include",
+                   "c:/Users/youssef/Desktop/programing/DS_c++/Project/ay7aga/XML-Files-Parser"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}

@@ -7,7 +7,7 @@ XML_to_json::XML_to_json( XML_Parser parser) {
   file_tree_json=parser.build_xml_tree();
     
 }
-void XML_to_json::preOrderTraversalVectorFill(TreeNode * node) {
+void XML_to_json::preOrderTraversalVectorTagsFill(TreeNode * node) {
     
   if (node == NULL)
     return;
@@ -16,57 +16,59 @@ void XML_to_json::preOrderTraversalVectorFill(TreeNode * node) {
   tree_Nodes.push_back(node);
 
   for (auto child: node -> children) {
-    preOrderTraversalVectorFill(child);
+    preOrderTraversalVectorTagsFill(child);
   }
 }
 
-// void XML_to_json:: printLevelOrder(TreeNode* root)
-// {
-//     // Base Case
-//     if (root == NULL)
-//         return;
- 
-//     // Create an empty queue for level order traversal
-//     queue<TreeNode*> q;
- 
-//     // Enqueue Root and initialize height
-//     q.push(root);
- 
-//     while (q.empty() == false) {
-         
-//         // Print front of queue and remove it from queue
-//         TreeNode* node = q.front();
-//         //cout << node->_tag_name << " ";
-//         //cout << node->_tag_data << " ";
-//         tree_Nodes.push_back(node);
 
-//         q.pop();
- 
-//         // Enqueue left child
-//         for (auto child: node -> children) {
-//             q.push(child);
-//         }
-       
-//     }
-// }
-string XML_to_json:: json_string()
+
+string XML_to_json :: tabs(int level)
 {
-    json_output="{\n";
-    if(file_tree_json->root==nullptr)
-    {
-      json_output+="}";
-      return json_output;
-    }
-    preOrderTraversalVectorFill(file_tree_json->root);
-    int counter=0;
-    while(!tree_Nodes.empty())
-    {
-      string key="\""+tree_Nodes[counter]->_tag_name+"\"";
-      string value="\""+tree_Nodes[counter]->_tag_data+"\"";
-      json_output+=key+":"+value+",\n";
-      counter++;
+  string tabs;
+  for (int i = 0; i < level+1; i++)
+  {
+    tabs+="\t";
+  }
+  return tabs;
+}
 
-    }
-    return json_output;
+void XML_to_json:: json_string_builder(TreeNode * node)
+{
+  if (file_tree_json->root==nullptr)
+  {
+    json_output_string="";
+    return ;
+  }
+  if (node == NULL)
+  {
+    return ;
+  }
+  string key="\""+node->_tag_name+"\"";
+  string value="\""+node->_tag_data+"\"";
+  
+  if(!node->children.empty())
+  {
+    json_output_string+=tabs(node->_node_level);
+    json_output_string+=key+":{\n";
+  }
+  else
+  {
+    json_output_string+=tabs(node->_node_level);
+    json_output_string+=key+":"+value+",\n";
+  }
+  for (auto child: node -> children) 
+  {
+    json_string_builder(child);
+  }
+  if(!node->children.empty())
+  {
+    json_output_string+=tabs(node->_node_level)+"}\n";
+  }
 
+}
+string XML_to_json::json_string()
+{
+  json_string_builder(file_tree_json->root);
+  json_output_string="{\n"+json_output_string+"\n}";
+  return json_output_string;
 }
