@@ -9,6 +9,16 @@
   * @}
   */
 
+
+/** @defgroup Class constructors
+  * @{
+  */
+
+/**
+ * @brief Constructor of the XML parser class.
+ * 
+ * @param file_location: string of the file location to be parsed.
+ */
 XML_Parser::XML_Parser(string file_location) {
     this->file_location = file_location;
     original_xml_data = "";
@@ -16,15 +26,14 @@ XML_Parser::XML_Parser(string file_location) {
     file_tree = NULL;
 }
 
-string XML_Parser::get_raw_xml_data()
-{
-    return get_xml_data(FORMAT_RAW);
-}
+/**
+  * @}
+  */
 
-string XML_Parser::get_formatted_xml_data()
-{
-    return get_xml_data(FORMAT_PRETTY);
-}
+
+/** @defgroup Class Private Functions
+  * @{
+  */
 
 string XML_Parser::get_xml_data(int formatting) {
 
@@ -47,6 +56,109 @@ string XML_Parser::get_xml_data(int formatting) {
     original_xml_data = _xml_data;
     return _xml_data;
 }
+
+void XML_Parser::trim(string& str) {
+    size_t first = str.find_first_not_of(" \t\n\r");
+    size_t last = str.find_last_not_of(" \t\n\r");
+    if (first != std::string::npos && last != std::string::npos)
+        str = str.substr(first, last - first + 1);
+    else
+        str.clear();
+}
+
+string XML_Parser::extract_data_field(string line)
+{ 
+    string data_field = "";
+
+    trim(line);
+
+    int data_start_index = line.find_first_of('>') + 1;
+    int data_end_index = line.find_last_of("</") - 1;
+
+    /*no tags were found*/
+    if(data_start_index == string::npos && data_end_index == string::npos)
+    {
+        data_field = line;
+
+    }else if(data_end_index == string::npos){
+        data_field = line.substr(data_start_index, line.size() - data_start_index);
+
+    }else{
+        data_field = line.substr(data_start_index, (data_end_index - data_start_index));
+    }
+    
+    return data_field;
+}
+
+void XML_Parser::printXML(TreeNode* node, int depth) {
+    for (int i = 0; i < depth; ++i) {
+        formated_xml_data += "    "; // 4 spaces for each level of depth
+    }
+
+    formated_xml_data += "<" + node->_tag_name + ">";
+    
+    if (!node->_tag_data.empty())
+    {
+        formated_xml_data += node->_tag_data;
+    } else if (!node->children.empty()) 
+    {
+        formated_xml_data += "\n";
+        for (const auto& child : node->children)
+        {
+            printXML(child, depth + 1);
+        }
+        for (int i = 0; i < depth; ++i) {
+            formated_xml_data += "    ";
+        }
+    }
+
+    formated_xml_data += "</" + node->_tag_name + ">\n";
+}
+
+/**
+  * @}
+  */
+
+/** @defgroup Class oublic functions defenition
+  * @{
+  */
+
+/**
+* @brief Function to return the XML data in the given file without any formatting(spaces - new lines).
+* 
+* @return string: The xml data.
+*/
+string XML_Parser::get_raw_xml_data()
+{
+    return get_xml_data(FORMAT_RAW);
+}
+
+/**
+* @brief Function to return the XML data in the given file with formatting(spaces - new lines).
+* 
+* @return string: The xml data. 
+*/
+string XML_Parser::get_formatted_xml_data()
+{
+    return get_xml_data(FORMAT_PRETTY);
+}
+
+/**
+ * @brief Function to highlight the exact place of the error (if there is one) by typing "ERROR" where is one.
+ * 
+ * @return string: The xml data.  
+ */
+string XML_Parser::highlight_errors()
+{
+    
+}
+
+/**
+ * @brief This function checks if the given file has any inconsistencies in the tags.
+ * 
+ * @return true: If the files contains any errors. 
+ * @return false: If the files is error free.
+ */
 
 bool XML_Parser::has_errors() 
 {
@@ -104,39 +216,11 @@ bool XML_Parser::has_errors()
     return error_flag; 
 }
 
-void XML_Parser::trim(string& str) {
-    size_t first = str.find_first_not_of(" \t\n\r");
-    size_t last = str.find_last_not_of(" \t\n\r");
-    if (first != std::string::npos && last != std::string::npos)
-        str = str.substr(first, last - first + 1);
-    else
-        str.clear();
-}
-
-string XML_Parser::extract_data_field(string line)
-{ 
-    string data_field = "";
-
-    trim(line);
-
-    int data_start_index = line.find_first_of('>') + 1;
-    int data_end_index = line.find_last_of("</") - 1;
-
-    /*no tags were found*/
-    if(data_start_index == string::npos && data_end_index == string::npos)
-    {
-        data_field = line;
-
-    }else if(data_end_index == string::npos){
-        data_field = line.substr(data_start_index, line.size() - data_start_index);
-
-    }else{
-        data_field = line.substr(data_start_index, (data_end_index - data_start_index));
-    }
-    
-    return data_field;
-}
-
+/**
+ * @brief Function to fix the errors present in the XML file.
+ * 
+ * @return string: The xml data.  
+ */
 string XML_Parser::fix_xml_data() 
 { 
     //if the file doesn't have errors then return 
@@ -230,31 +314,11 @@ string XML_Parser::fix_xml_data()
     return fixed_xml_data;
 }
 
-void XML_Parser::printXML(TreeNode* node, int depth) {
-    for (int i = 0; i < depth; ++i) {
-        formated_xml_data += "    "; // 4 spaces for each level of depth
-    }
-
-    formated_xml_data += "<" + node->_tag_name + ">";
-    
-    if (!node->_tag_data.empty())
-    {
-        formated_xml_data += node->_tag_data;
-    } else if (!node->children.empty()) 
-    {
-        formated_xml_data += "\n";
-        for (const auto& child : node->children)
-        {
-            printXML(child, depth + 1);
-        }
-        for (int i = 0; i < depth; ++i) {
-            formated_xml_data += "    ";
-        }
-    }
-
-    formated_xml_data += "</" + node->_tag_name + ">\n";
-}
-
+/**
+ * @brief Function to fix the formatting of the file(indentation - new lines) for the file to be more readable.
+ * 
+ * @return string: The formatted xml data.  
+ */
 string XML_Parser::xml_format() 
 {   
     if(formated_xml_data != "")
@@ -268,6 +332,11 @@ string XML_Parser::xml_format()
     return formated_xml_data; 
 }
 
+/**
+ * @brief Function to convert the xml data into a tree.
+ * 
+ * @return XML_Tree*: a pointer to the tree object.
+ */
 XML_Tree* XML_Parser::build_xml_tree()
 {    
     /*If we already built the tree once don't do it again*/
@@ -286,6 +355,7 @@ XML_Tree* XML_Parser::build_xml_tree()
 
     file_tree = new XML_Tree();
     TreeNode* currentNode = NULL;
+    int node_level = 0;
 
     regex _tag_regex("<([^<>]+)>");
 
@@ -329,9 +399,14 @@ XML_Tree* XML_Parser::build_xml_tree()
                     file_tree->InsertChild(currentNode, tag_name, data_field);
                     currentNode = currentNode->children.back();
                 }
+
+                currentNode->_node_level = node_level;
+
+                node_level++;  /*Increment the node level when we encounter an opening tag*/
             }
             else // End tag
             {
+                node_level--;
                 currentNode = currentNode->parent; // Move up to the parent node            
             }
 
@@ -342,6 +417,14 @@ XML_Tree* XML_Parser::build_xml_tree()
     return file_tree;
 }
 
+/**
+  * @}
+  */
+
+
+/** @defgroup Data Members Getters
+  * @{
+  */
 string XML_Parser::get_original_xml_data(){
     /*If we didn't parse the file yet then parse it*/
     if(original_xml_data == "")
@@ -357,3 +440,7 @@ string XML_Parser::get_fixed_xml_data(){
 
     return fixed_xml_data; 
 }
+/**
+  * @}
+  */
+
