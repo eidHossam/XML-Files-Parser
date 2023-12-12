@@ -39,6 +39,12 @@ private:
 public:
 
     /**
+     * @brief Default constructor of the class.
+     * 
+     */
+    XML_Parser();
+
+    /**
      * @brief Constructor of the XML parser class.
      * 
      * @param file_location: string of the file location to be parsed.
