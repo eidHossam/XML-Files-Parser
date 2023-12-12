@@ -3,6 +3,7 @@
 TreeNode::TreeNode(string tag_name, string tag_data){
     _tag_name = tag_name;
     _tag_data = tag_data;
+    _node_level = 0;
     parent = NULL;
 }
 
