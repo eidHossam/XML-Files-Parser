@@ -6,10 +6,11 @@ using namespace std;
 class TreeNode
 {
 public:
-     /*datatypes of the tree*/
+    /*datatypes of the tree*/
     string _tag_name;
     string _tag_data;
-
+    int _node_level;
+    
     /*children of a node *children tags* */
     vector<TreeNode*> children;
 
