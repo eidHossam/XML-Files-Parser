@@ -17,8 +17,10 @@ int main()
     string _xml_data;
     XML_Parser parser("src/sample.xml");
 
-    _xml_data = parser.xml_format();
+    XML_Tree *tree =  parser.build_xml_tree();
+    tree->preOrderTraversal();
+    // _xml_data = parser.get_raw_xml_data();
 
-    cout << _xml_data;
+    // cout << _xml_data;
     return 0;
 }
