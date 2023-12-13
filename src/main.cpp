@@ -22,6 +22,17 @@ int main()
     XML_Tree* file_tree=parser.build_xml_tree();
     _xml_data = parser.xml_format();
     //cout<<_xml_data;
-    cout << test.json_string();
+    //cout << test.json_string();
+    cout<<file_tree->root->children[0]->children[3]->children[0]->get_Index();
+     // Create and open a text file
+    ofstream json_file("test.json");
+
+     // Write to the file
+    while(1){
+        json_file<< test.json_string();
+        break;
+    }
+     // Close the file
+    json_file.close();
     return 0;
 }

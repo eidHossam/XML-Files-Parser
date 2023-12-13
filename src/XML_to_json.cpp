@@ -54,7 +54,17 @@ void XML_to_json:: json_string_builder(TreeNode * node)
   else
   {
     json_output_string+=tabs(node->_node_level);
-    json_output_string+=key+":"+value+",\n";
+    json_output_string+=key+":"+value;
+    
+    if(node->is_Last_Child())
+    {
+      json_output_string+="\n";
+    }
+    else
+    {
+      json_output_string+=",\n";
+    }
+    
   }
   for (auto child: node -> children) 
   {
@@ -62,10 +72,20 @@ void XML_to_json:: json_string_builder(TreeNode * node)
   }
   if(!node->children.empty())
   {
-    json_output_string+=tabs(node->_node_level)+"}\n";
+    json_output_string+=tabs(node->_node_level)+"}";
+    if(node->is_Last_Child())
+    {
+      json_output_string+="\n ";
+    }
+    else
+    {
+      json_output_string+=",\n ";
+    }
+
   }
 
 }
+
 string XML_to_json::json_string()
 {
   json_string_builder(file_tree_json->root);

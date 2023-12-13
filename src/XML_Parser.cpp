@@ -397,6 +397,8 @@ XML_Tree* XML_Parser::build_xml_tree()
 
                 if(currentNode == NULL) // If there is no current node, this is the root
                 {
+                    //to restart the index counter,should be one in insertroot but it wasnt used
+                    TreeNode:: index_counter=0;
                     currentNode = TreeNode::GetNewNode(tag_name, data_field);
                     file_tree->root = currentNode;
                 }
