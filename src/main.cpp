@@ -23,7 +23,9 @@ int main()
     _xml_data = parser.xml_format();
     //cout<<_xml_data;
     //cout << test.json_string();
-    cout<<file_tree->root->children[0]->children[3]->children[0]->get_Index();
+    cout<<file_tree->root->similar_Brothers();
+    cout<<file_tree->root->_tag_name;
+
      // Create and open a text file
     ofstream json_file("test.json");
 

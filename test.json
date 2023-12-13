@@ -10,7 +10,7 @@
 						"topic":" economy ",
 						"topic":" finance "
 					}
- 				}
+ 				},
  				"post":{
 					"body":" Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ",
 					"topics":{
@@ -21,7 +21,7 @@
  			"followers":{
 				"follower":{
 					"id":"2"
-				}
+				},
  				"follower":{
 					"id":"3"
 				}

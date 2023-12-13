@@ -32,6 +32,59 @@ string XML_to_json :: tabs(int level)
   return tabs;
 }
 
+// void XML_to_json:: json_string_builder(TreeNode * node)
+// {
+//   if (file_tree_json->root==nullptr)
+//   {
+//     json_output_string="";
+//     return ;
+//   }
+//   if (node == NULL)
+//   {
+//     return ;
+//   }
+//   string key="\""+node->_tag_name+"\"";
+//   string value="\""+node->_tag_data+"\"";
+  
+//   if(!node->children.empty())
+//   {
+//     json_output_string+=tabs(node->_node_level);
+//     json_output_string+=key+":{\n";
+//   }
+//   else
+//   {
+//     json_output_string+=tabs(node->_node_level);
+//     json_output_string+=key+":"+value;
+    
+//     if(node->is_Last_Child())
+//     {
+//       json_output_string+="\n";
+//     }
+//     else
+//     {
+//       json_output_string+=",\n";
+//     }
+    
+//   }
+//   for (auto child: node -> children) 
+//   {
+//     json_string_builder(child);
+//   }
+//   if(!node->children.empty())
+//   {
+//     json_output_string+=tabs(node->_node_level)+"}";
+//     if(node->is_Last_Child())
+//     {
+//       json_output_string+="\n ";
+//     }
+//     else
+//     {
+//       json_output_string+=",\n ";
+//     }
+
+//   }
+
+// }
 void XML_to_json:: json_string_builder(TreeNode * node)
 {
   if (file_tree_json->root==nullptr)
@@ -48,8 +101,20 @@ void XML_to_json:: json_string_builder(TreeNode * node)
   
   if(!node->children.empty())
   {
-    json_output_string+=tabs(node->_node_level);
-    json_output_string+=key+":{\n";
+    // json_output_string+=tabs(node->_node_level);
+    // json_output_string+=key+":{\n";
+    if (node->similar_Brothers())
+    {
+      json_output_string+=tabs(node->_node_level);
+      json_output_string+=key+":[\n{";
+    }
+    else
+    {
+      json_output_string+=tabs(node->_node_level);
+      json_output_string+=key+":{\n";
+    }
+    
+    
   }
   else
   {
@@ -72,7 +137,18 @@ void XML_to_json:: json_string_builder(TreeNode * node)
   }
   if(!node->children.empty())
   {
-    json_output_string+=tabs(node->_node_level)+"}";
+   // json_output_string+=tabs(node->_node_level)+"}";
+
+    if (node->similar_Brothers())
+    {
+      json_output_string+=tabs(node->_node_level)+"}]";
+    }
+    else
+    {
+      json_output_string+=tabs(node->_node_level)+"}";
+    }
+
+
     if(node->is_Last_Child())
     {
       json_output_string+="\n ";

@@ -44,12 +44,31 @@ bool TreeNode:: is_Last_Child()
         return true;
     }
     int size=brothers_size();
-    if (_tag_name==parent->children[size-1]->_tag_name && _tag_data==parent->children[size-1]->_tag_data)
+    if (index==parent->children[size-1]->index )
     {
         return true;
     }
     return false;
     
+}
+int TreeNode:: similar_Brothers()
+{
+    if(parent==NULL)
+    {
+        return 0;
+    }
+    int similar_brothers=0;
+    int size=brothers_size();
+    for (int i = 0; i < size; i++)
+    {
+        if (_tag_name==parent->children[i]->_tag_name && index !=parent->children[i]->index )
+        {
+          similar_brothers++;
+        }
+        
+    }
+    return similar_brothers;    
+
 }
 
 TreeNode* TreeNode::GetNewNode(string _tag_name , string _tag_data)

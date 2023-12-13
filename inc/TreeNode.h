@@ -21,6 +21,7 @@ public:
     TreeNode(string tag_name, string tag_data);
 
     static TreeNode* GetNewNode(string _tag_name , string _tag_data);
+    int similar_Brothers();
 
     bool has_Brother();
     int brothers_size();
