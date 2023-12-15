@@ -15,7 +15,16 @@ private:
     vector<TreeNode*> tree_Nodes;
     string tabs(int level);
     void put_comma(TreeNode* node);
-    void array_Of_Objects_style(TreeNode* node,string key,string value);
+    void objectsArray_Style_Nested(TreeNode* node,string key,string value);
+    void objects_Style_Nested(TreeNode* node,string key,string value);
+    void objectsArray_Style_Leaf(TreeNode* node,string key,string value);
+    void objects_Style_Leaf(TreeNode* node,string key,string value);
+    void closeBrackets_objectsArray_Style_Nested(TreeNode* node,string key,string value);
+    void closeBrackets_objects_Style_Nested(TreeNode* node,string key,string value);
+    void closeBrackets_objectsArray_Style_Leaf(TreeNode* node,string key,string value);
+
+
+
 
 
 public:

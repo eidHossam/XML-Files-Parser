@@ -21,11 +21,7 @@ int main()
     XML_to_json test(parser);
     XML_Tree* file_tree=parser.build_xml_tree();
     _xml_data = parser.xml_format();
-    //cout<<_xml_data;
-    //cout << test.json_string();
-    // cout<<file_tree->root->children[0]->children[2]->children[0]->last_similarBrother_index()<<endl;
-    // cout<<file_tree->root->children[0]->children[2]->children[1]->last_similarBrother_index()<<endl;
-   
+
 
      // Create and open a text file
     ofstream json_file("test.json");
