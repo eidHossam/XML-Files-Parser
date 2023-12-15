@@ -14,6 +14,8 @@ private:
     XML_Parser parser;
     vector<TreeNode*> tree_Nodes;
     string tabs(int level);
+    void put_comma(TreeNode* node);
+    void array_Of_Objects_style(TreeNode* node,string key,string value);
 
 
 public:
@@ -22,5 +24,6 @@ public:
     void json_string_builder(TreeNode * node);
     void preOrderTraversalVectorTagsFill(TreeNode * node) ;
    
+
  
 };

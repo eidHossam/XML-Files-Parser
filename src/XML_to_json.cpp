@@ -85,6 +85,34 @@ string XML_to_json :: tabs(int level)
 //   }
 
 // }
+void XML_to_json:: put_comma(TreeNode* node)
+{
+  if(node->is_Last_Child())
+  {
+    json_output_string+="\n";
+  }
+  else
+  { 
+    json_output_string+=",\n";
+  }
+}
+void XML_to_json:: array_Of_Objects_style(TreeNode* node,string key,string value)
+{
+  if (!node->is_Similar_Visited())
+  {
+    json_output_string+=tabs(node->_node_level)+key+":[\n"+tabs(node->_node_level)+"{\n";
+    node->visited=true;
+    
+  }
+  else
+  {
+    json_output_string+=tabs(node->_node_level);
+    json_output_string+="{\n";
+  }
+      
+      
+ // node->visited=true;
+}
 void XML_to_json:: json_string_builder(TreeNode * node)
 {
   if (file_tree_json->root==nullptr)
@@ -101,12 +129,11 @@ void XML_to_json:: json_string_builder(TreeNode * node)
   
   if(!node->children.empty())
   {
-    // json_output_string+=tabs(node->_node_level);
-    // json_output_string+=key+":{\n";
+    /*if nested nodes "tags"*/
     if (node->similar_Brothers())
     {
-      json_output_string+=tabs(node->_node_level);
-      json_output_string+=key+":[\n{";
+      
+      array_Of_Objects_style(node,key,value);
     }
     else
     {
@@ -118,30 +145,60 @@ void XML_to_json:: json_string_builder(TreeNode * node)
   }
   else
   {
+    /*if leaf nodes "tags"*/
+    if (node->similar_Brothers())
+    {
+      // json_output_string+=tabs(node->_node_level);
+      // json_output_string+=key+": [";
+      if (!node->is_Similar_Visited())
+      {
+        json_output_string+=tabs(node->_node_level)+key+":[\n"+tabs(node->_node_level)+value;
+        node->visited=true;
+    
+      }
+      else
+      {
+        json_output_string+=tabs(node->_node_level);
+        json_output_string+=value;
+      }
+      
+
+    }
+    else{
     json_output_string+=tabs(node->_node_level);
     json_output_string+=key+":"+value;
-    
-    if(node->is_Last_Child())
-    {
-      json_output_string+="\n";
     }
-    else
-    {
-      json_output_string+=",\n";
-    }
+    put_comma(node);
     
   }
+
+
+
+
   for (auto child: node -> children) 
   {
     json_string_builder(child);
   }
+
+
+
   if(!node->children.empty())
   {
    // json_output_string+=tabs(node->_node_level)+"}";
 
     if (node->similar_Brothers())
     {
-      json_output_string+=tabs(node->_node_level)+"}]";
+      if (node->index == node->last_similarBrother_index())
+      {
+        json_output_string+=tabs(node->_node_level)+"}\n"+tabs(node->_node_level)+"]";
+
+      }
+      else
+      {
+        json_output_string+=tabs(node->_node_level)+"}";
+
+      }
+      
     }
     else
     {
@@ -149,15 +206,16 @@ void XML_to_json:: json_string_builder(TreeNode * node)
     }
 
 
-    if(node->is_Last_Child())
-    {
-      json_output_string+="\n ";
-    }
-    else
-    {
-      json_output_string+=",\n ";
-    }
+    put_comma(node);
 
+
+  }
+  else
+  {
+    if(node->similar_Brothers() &&  node->index == node->last_similarBrother_index())
+    {
+      json_output_string+=tabs(node->_node_level)+"]\n";
+    }
   }
 
 }

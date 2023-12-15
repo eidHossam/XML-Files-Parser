@@ -6,6 +6,7 @@ TreeNode::TreeNode(string tag_name, string tag_data){
     index=index_counter;
     index_counter++;
     _node_level = 0;
+    visited=false; //it helps when traversing the tree to convert to json
     parent = NULL;
 }
 bool TreeNode::has_Brother()
@@ -69,6 +70,43 @@ int TreeNode:: similar_Brothers()
     }
     return similar_brothers;    
 
+}
+int TreeNode:: last_similarBrother_index()
+{
+    if(parent==NULL)
+    {
+        return 0;
+    }
+    int similar_brothers=0;
+    int last_Similar_index=index;
+    int size=brothers_size();
+    for (int i = 0; i < size; i++)
+    {
+        if (_tag_name==parent->children[i]->_tag_name )
+        {
+          last_Similar_index=parent->children[i]->index;
+        }
+        
+    }
+    return last_Similar_index;
+}
+bool TreeNode:: is_Similar_Visited()
+{
+    if(parent==NULL)
+    {
+        return false;
+    }
+   
+    int size=brothers_size();
+    for (int i = 0; i < size; i++)
+    {
+        if(parent->children[i]->similar_Brothers())
+        {
+           
+            return parent->children[i]->visited;
+        }
+    }
+    return visited;
 }
 
 TreeNode* TreeNode::GetNewNode(string _tag_name , string _tag_data)
