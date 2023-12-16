@@ -1,9 +1,8 @@
 #pragma once
-#include <bits/stdc++.h> 
 #include "tree.h"
 #include <sstream>
 
-using namespace std;
+//using namespace std;
 
 class XML_Parser
 {

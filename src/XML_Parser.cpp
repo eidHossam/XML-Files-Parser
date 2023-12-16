@@ -64,8 +64,8 @@ string XML_Parser::get_xml_data(int formatting) {
 }
 
 void XML_Parser::trim(string& str) {
-    size_t first = str.find_first_not_of(" \t\n\r");
-    size_t last = str.find_last_not_of(" \t\n\r");
+    std::size_t first = str.find_first_not_of(" \t\n\r");
+    std::size_t last = str.find_last_not_of(" \t\n\r");
     if (first != std::string::npos && last != std::string::npos)
         str = str.substr(first, last - first + 1);
     else
@@ -156,7 +156,7 @@ string XML_Parser::get_formatted_xml_data()
  */
 string XML_Parser::highlight_errors()
 {
-    
+   return "string x"; 
 }
 
 /**
@@ -397,6 +397,8 @@ XML_Tree* XML_Parser::build_xml_tree()
 
                 if(currentNode == NULL) // If there is no current node, this is the root
                 {
+                    //to restart the index counter,should be one in insertroot but it wasnt used
+                    TreeNode:: index_counter=0;
                     currentNode = TreeNode::GetNewNode(tag_name, data_field);
                     file_tree->root = currentNode;
                 }
