@@ -5,6 +5,7 @@ INCLUDEPATH += $$quote(E:/FEASU/Fall semester 2023 - on/DS/XML-Files-Parser/inc)
 # Input
 HEADERS += inc/tree.h \
            inc/Node.h \
+           inc/resultwindow.h \
            inc/tree.h \
            inc/XML_Compressor.h \
            inc/XML_Decompressor.h \
@@ -14,6 +15,7 @@ HEADERS += inc/tree.h \
            inc/TreeNode.h \
            inc/XML_Parser.h
 SOURCES += src/main.cpp \
+           src/resultwindow.cpp \
            src/tree.cpp \
            src/TreeNode.cpp \
            src/XML_Parser.cpp \

@@ -27,6 +27,14 @@ private slots:
 
     void on_fix_data_button_clicked();
 
+    void on_locate_button_clicked();
+
+    void on_json_button_clicked();
+
+    void on_compress_button_clicked();
+
+    void on_show_errors_button_clicked();
+
 private:
     Ui::MainWindow *ui;
 
