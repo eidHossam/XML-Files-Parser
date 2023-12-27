@@ -125,7 +125,7 @@ void XML_Parser::printXML(TreeNode* node, int depth) {
   * @}
   */
 
-/** @defgroup Class oublic functions defenition
+/** @defgroup Class public functions defenition
   * @{
   */
 
@@ -156,7 +156,7 @@ string XML_Parser::get_formatted_xml_data()
  */
 string XML_Parser::highlight_errors()
 {
-    
+    return original_xml_data;
 }
 
 /**
@@ -315,6 +315,10 @@ string XML_Parser::fix_xml_data()
         xml_data += "\n</" + tags.top() + ">";
         tags.pop();
     }
+
+    //Delete the first empty line
+    int text_start_index = xml_data.find_first_of('<');
+    xml_data = xml_data.substr(text_start_index, xml_data.size() - text_start_index);
 
     fixed_xml_data = xml_data;
     return fixed_xml_data;
