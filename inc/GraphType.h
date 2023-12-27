@@ -1,5 +1,6 @@
 #pragma once
 #include <bits/stdc++.h>
+#include "XML_Parser.h"
 
 using namespace std;
 
@@ -59,6 +60,8 @@ public:
      */
     void breadth_first_traversal();
     
+    void build_Graph( XML_Tree* file_tree);
+
     /**
      * @brief Destructor of the GraphType
      */

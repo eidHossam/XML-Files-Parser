@@ -139,3 +139,24 @@ void GraphType::add_vertex(string vertex)
     
     vertices_count++;
 }
+void GraphType:: build_Graph( XML_Tree* file_tree)
+{
+   // vector<TreeNode*> users=file_tree->root->no_Of_Users_Vector();
+    vector<vector<string>> followersids=file_tree->root->followersID();
+    vector<TreeNode*> userids=file_tree->root->id_Of_Users();
+    
+    for(auto var : userids)
+    {
+        this->add_vertex(var->_tag_data);
+    }
+    for (int i = 0; i < userids.size(); i++)
+    {
+        for (int j = 0; j <followersids[i].size(); j++)
+        {   
+            
+            this->add_edge(userids[i]->_tag_data,followersids[i][j],1);
+        }
+        
+    }    
+
+}

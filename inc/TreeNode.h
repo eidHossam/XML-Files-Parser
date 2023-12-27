@@ -30,6 +30,10 @@ public:
     int brothers_size();
     bool is_Last_Child();
     int get_Index();
-
+    void preOrderTraversalUsersHelper(TreeNode * node ,vector<TreeNode*>& users );
+    vector<TreeNode*> no_Of_Users_Vector();
+    vector <TreeNode*>  id_Of_Users();
+    vector<vector<string>> followersID();
+    void preOrderTraversalfollowerIDHelper(TreeNode * node ,vector<string>& followerids ) ;
 
 };

@@ -6,7 +6,7 @@ adjNode* DiaGraph:: getAdjListNode(int value, int weight, adjNode* head)     {
          
         newNode->next = head;   // point new node to current head
         return newNode;
-}
+} 
 DiaGraph:: DiaGraph(graphEdge edges[], int n, int N)  {
         // allocate new node
         head = new adjNode*[N]();
