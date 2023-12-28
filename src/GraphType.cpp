@@ -7,7 +7,8 @@ GraphType::GraphType(int Vertices_max) : VERTICES_MAX(Vertices_max)
     
     vertices_arr = new string[VERTICES_MAX];        //Create an array of vertices with the size of the max vertices.
     adjacency_matrix = new int *[VERTICES_MAX];       //Create an array of pointers to integers.
-
+    indegree.resize(VERTICES_MAX,0);
+    outdegree.resize(VERTICES_MAX,0);
     for (size_t i = 0; i < Vertices_max; i++)
     {
         adjacency_matrix[i] = new int[VERTICES_MAX];    //Create the the adjacency list for each vertex.
@@ -69,7 +70,8 @@ void GraphType::add_edge(string src_vertex,
 {
     int row = get_vertex_index(src_vertex);
     int col = get_vertex_index(dest_vertex);
-
+    indegree[col]++;
+    outdegree[row]++;
     adjacency_matrix[row][col] = weight;
 }
 
@@ -159,4 +161,18 @@ void GraphType:: build_Graph( XML_Tree* file_tree)
         
     }    
 
+}
+vector<int> GraphType:: getIndegree()
+{
+    return indegree;
+}
+vector<int> GraphType:: getOutdegree()
+{
+    return outdegree;
+}
+vector<string> GraphType::get_Vertices_Arr()
+{
+    //int N = sizeof(vertices_arr) / sizeof(vertices_arr[0]);
+    vector<string> vertices_vector(vertices_arr,vertices_arr+VERTICES_MAX);
+    return vertices_vector;
 }
