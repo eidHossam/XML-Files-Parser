@@ -76,9 +76,9 @@ public:
     /**
      * @brief Function to highlight the exact place of the error (if there is one) by typing "ERROR" where is one.
      * 
-     * @return string: The xml data.  
+     * @return vector<string>:List containg all the errors.  
      */
-    string highlight_errors();
+    vector<string> highlight_errors();
 
     /**
      * @brief Function to fix the errors present in the XML file.
