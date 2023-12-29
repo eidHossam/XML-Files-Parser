@@ -16,11 +16,15 @@ int main()
 {
     string _xml_data;
     XML_Parser parser("src/sample.xml");
+    _xml_data = parser.get_raw_xml_data();
 
-    _xml_data = parser.get_formatted_xml_data();
-    _xml_data = parser.fix_xml_data();
-    _xml_data = parser.highlight_errors();
+    cout << _xml_data << endl;
+    
+    vector<string> vec = parser.highlight_errors();
 
-    cout << _xml_data;
+    for(string s : vec)
+    {
+        cout << s << endl;
+    }
     return 0;
 }
