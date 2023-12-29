@@ -1,6 +1,7 @@
 #include "tree.h"
 
 void XML_Tree::InsertRoot(string _tag_name, string _tag_data) {
+
   if (root == NULL) {
     root = TreeNode::GetNewNode(_tag_name, _tag_data);
   }
