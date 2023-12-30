@@ -507,11 +507,9 @@ void XML_Parser::findPosts(TreeNode* node, const string& word, vector<string>& p
         found_post = false;
         body = node->_tag_data;
         string lower_case_body = body;
-        string lower_case_word = word;
         transform(lower_case_body.begin(), lower_case_body.end(), lower_case_body.begin(), ::tolower);
-        transform(lower_case_word.begin(), lower_case_word.end(), lower_case_word.begin(), ::tolower);
 
-        if(lower_case_body.find(lower_case_word) != string::npos)
+        if(lower_case_body.find(word) != string::npos)
         {
             posts.push_back(body);
             found_post = true;
@@ -520,11 +518,9 @@ void XML_Parser::findPosts(TreeNode* node, const string& word, vector<string>& p
     {
         string data = node->_tag_data;
         string lower_case_data = data;
-        string lower_case_word = word;
         transform(lower_case_data.begin(), lower_case_data.end(), lower_case_data.begin(), ::tolower);
-        transform(lower_case_word.begin(), lower_case_word.end(), lower_case_word.begin(), ::tolower);
 
-        if(!found_post && lower_case_data.find(lower_case_word) != string::npos)
+        if(!found_post && lower_case_data.find(word) != string::npos)
         {
             posts.push_back(body);
             found_post = true;
