@@ -16,15 +16,12 @@ int main()
 {
     string _xml_data;
     XML_Parser parser("src/sample.xml");
-    _xml_data = parser.get_raw_xml_data();
 
-    cout << _xml_data << endl;
-    
-    vector<string> vec = parser.highlight_errors();
+    vector<string> posts = parser.findPosts("economy");
 
-    for(string s : vec)
+    for(auto post: posts)
     {
-        cout << s << endl;
+        cout << post << endl;
     }
     return 0;
 }
