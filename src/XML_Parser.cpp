@@ -374,6 +374,17 @@ void XML_Parser::findPosts(TreeNode* node, const string& word, vector<string>& p
     }
 }
 
+vector<string> XML_Parser::findPosts(const string& word) {
+    vector<string> posts;
+
+    build_xml_tree();
+    
+    string lower_case_word = word;
+    transform(lower_case_word.begin(), lower_case_word.end(), lower_case_word.begin(), ::tolower);
+
+    findPosts(this->file_tree->root, lower_case_word, posts);
+    return posts;
+}
 /**
  * @brief Function to convert the xml data into a tree.
  * 
