@@ -64,8 +64,8 @@ string XML_Parser::get_xml_data(int formatting) {
 }
 
 void XML_Parser::trim(string& str) {
-    std::size_t first = str.find_first_not_of(" \t\n\r");
-    std::size_t last = str.find_last_not_of(" \t\n\r");
+    size_t first = str.find_first_not_of(" \t\n\r");
+    size_t last = str.find_last_not_of(" \t\n\r");
     if (first != std::string::npos && last != std::string::npos)
         str = str.substr(first, last - first + 1);
     else
@@ -125,7 +125,7 @@ void XML_Parser::printXML(TreeNode* node, int depth) {
   * @}
   */
 
-/** @defgroup Class oublic functions defenition
+/** @defgroup Class public functions defenition
   * @{
   */
 
@@ -152,11 +152,86 @@ string XML_Parser::get_formatted_xml_data()
 /**
  * @brief Function to highlight the exact place of the error (if there is one) by typing "ERROR" where is one.
  * 
- * @return string: The xml data.  
+ * @return vector<string>:List containg all the errors.  
  */
-string XML_Parser::highlight_errors()
+vector<string> XML_Parser::highlight_errors()
 {
-   return "string x"; 
+    vector<string> errors;
+    /*Open the XML file*/
+    ifstream _xml_file(file_location);
+
+    bool leaveNode = false;
+    
+    string tmp;
+    int tag_count = 0;
+
+    regex _tag_regex("<([^<>]+)>");
+    stack<string> tags; /*Save the opening tags in the stack to check the consistency*/
+    string closing_tag;
+
+    if( _xml_file.is_open())
+    {
+        while (getline(_xml_file,tmp))
+        {
+            sregex_iterator _tag_iterator(tmp.begin(),tmp.end(),_tag_regex);
+            sregex_iterator _endtag_iterator;
+            
+            while(_tag_iterator != _endtag_iterator)
+            {
+                smatch match = *_tag_iterator;
+                string tag = match.str();
+
+                if(tag[1] != '/') // Start tag
+                {
+                    if(leaveNode)
+                    {
+                        /*Missing closing tag*/
+                        errors.push_back("Missing closing tag \"" + tags.top() + "\" at tag number " + 
+                             to_string(tag_count));
+                        tags.pop();
+                        leaveNode = false;
+                    }
+
+                    string tag_name = tag.substr(1, tag.size() - 2); // Remove the angle brackets
+                    tags.push(tag_name);
+
+                    /*Check if this a leaveNode node by checking if it contains data*/
+                    string data_field = extract_data_field(tmp);
+
+                    if(!data_field.empty())
+                    {
+                        leaveNode = true;
+                    }
+                    ++_tag_iterator;
+                }
+                else // End tag
+                {
+                    string tag_name = tag.substr(2, tag.size() - 3); // Remove the angle brackets
+
+                    if(tag_name != tags.top())
+                    {
+                        if(leaveNode)
+                        {
+                            errors.push_back("Mismatch closing tag \"" + tags.top() + "\" at tag number " + 
+                                to_string(tag_count));
+                            ++_tag_iterator;
+                        }else{
+                            errors.push_back("Missing closing tag \"" + tags.top() + "\" at tag number " + 
+                                to_string(tag_count));
+
+                        }
+                    }else{
+                        ++_tag_iterator;
+                    }
+                    tags.pop();
+                    leaveNode = false;
+                }                
+                tag_count++;
+            }
+        }
+    }
+    
+    return errors;
 }
 
 /**
@@ -277,7 +352,7 @@ string XML_Parser::fix_xml_data()
                     }
 
                     /*Put the start tag in the line*/
-                    xml_data += "\n" + match.str();
+                    xml_data += match.str();
                     
                     string tag_name = tag.substr(1, tag.size() - 2); // Remove the angle brackets
                     tags.push(tag_name);
@@ -293,12 +368,6 @@ string XML_Parser::fix_xml_data()
                 }
                 else // End tag
                 {
-                    /*Added to be more readable can be deleted*/
-                    if(!leaveNode)
-                    {
-                        xml_data += "\n";
-                    }
-
                     xml_data += "</" + tags.top() + ">";
 
                     tags.pop();
@@ -312,9 +381,13 @@ string XML_Parser::fix_xml_data()
     /*Check if there opening tags without closing tags and fix them*/
     while(!tags.empty())
     {
-        xml_data += "\n</" + tags.top() + ">";
+        xml_data += "</" + tags.top() + ">";
         tags.pop();
     }
+
+    //Delete the first empty line
+    int text_start_index = xml_data.find_first_of('<');
+    xml_data = xml_data.substr(text_start_index, xml_data.size() - text_start_index);
 
     fixed_xml_data = xml_data;
     return fixed_xml_data;
@@ -397,8 +470,6 @@ XML_Tree* XML_Parser::build_xml_tree()
 
                 if(currentNode == NULL) // If there is no current node, this is the root
                 {
-                    //to restart the index counter,should be one in insertroot but it wasnt used
-                    TreeNode:: index_counter=0;
                     currentNode = TreeNode::GetNewNode(tag_name, data_field);
                     file_tree->root = currentNode;
                 }
@@ -451,4 +522,53 @@ string XML_Parser::get_fixed_xml_data(){
 /**
   * @}
   */
+
+
+void XML_Parser::findPosts(TreeNode* node, const string& word, vector<string>& posts) {
+    static string body;
+    static bool found_post = false;
+    if (node == NULL)
+        return;
+
+    if (node->_tag_name == "body")
+    {
+        found_post = false;
+        body = node->_tag_data;
+        string lower_case_body = body;
+        transform(lower_case_body.begin(), lower_case_body.end(), lower_case_body.begin(), ::tolower);
+
+        if(lower_case_body.find(word) != string::npos)
+        {
+            posts.push_back(body);
+            found_post = true;
+        }
+    }else if(node->_tag_name == "topic")
+    {
+        string data = node->_tag_data;
+        string lower_case_data = data;
+        transform(lower_case_data.begin(), lower_case_data.end(), lower_case_data.begin(), ::tolower);
+
+        if(!found_post && lower_case_data.find(word) != string::npos)
+        {
+            posts.push_back(body);
+            found_post = true;
+        }
+    }
+
+    for (auto child : node->children) {
+        findPosts(child, word, posts);
+    }
+}
+
+vector<string> XML_Parser::findPosts(const string& word) {
+    vector<string> posts;
+
+    build_xml_tree();
+
+    string lower_case_word = word;
+    transform(lower_case_word.begin(), lower_case_word.end(), lower_case_word.begin(), ::tolower);
+
+    findPosts(this->file_tree->root, lower_case_word, posts);
+    return posts;
+}
 

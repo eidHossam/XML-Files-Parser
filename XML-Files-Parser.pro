@@ -1,10 +1,13 @@
 TEMPLATE = app
 TARGET = XML-Files-Parser
 INCLUDEPATH += $$quote(E:/FEASU/Fall semester 2023 - on/DS/XML-Files-Parser/inc)
+CONFIG += static
+QT += core gui
 
 # Input
 HEADERS += inc/tree.h \
            inc/Node.h \
+           inc/editwindow.h \
            inc/resultwindow.h \
            inc/tree.h \
            inc/XML_Compressor.h \
@@ -13,8 +16,11 @@ HEADERS += inc/tree.h \
            inc/Huffman_Coding.h \
            inc/mainwindow.h \
            inc/TreeNode.h \
-           inc/XML_Parser.h
+           inc/NetworkAnalysis.h \
+           inc/GraphType.h \
+
 SOURCES += src/main.cpp \
+           src/editwindow.cpp \
            src/resultwindow.cpp \
            src/tree.cpp \
            src/TreeNode.cpp \
@@ -23,8 +29,13 @@ SOURCES += src/main.cpp \
            src/XML_Compressor.cpp \
            src/XML_Decompressor.cpp \
            src/XML_to_json.cpp \
-           src/Huffman_Coding.cpp
+           src/NetworkAnalysis.cpp \
+           src/GraphType.cpp \
+           src/Huffman_Coding.cpp\
 
+
+INCLUDEPATH += "C:/Program Files/Graphviz/include"
+LIBS += -L"C:/Program Files/Graphviz/lib" -lgvc
 
 QT += widgets
 
