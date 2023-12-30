@@ -32,6 +32,9 @@ private:
     string extract_data_field(string line);
 
     void printXML(TreeNode* node, int depth);
+
+    void findPosts(TreeNode* node, const string& word, vector<string>& posts);
+
     /**
       * @}
       */ 
@@ -100,6 +103,15 @@ public:
      * @return XML_Tree*: a pointer to the tree object.
      */
     XML_Tree* build_xml_tree();
+    
+    /**
+     * @brief Search for the given word in all the posts in the xml file. 
+     * 
+     * @param word: word to search for.
+     * @return vector<string>: list of posts that match the given word.
+     */
+    vector<string> findPosts(const string& word);
+
 
 /** @defgroup Getters
   * @{
