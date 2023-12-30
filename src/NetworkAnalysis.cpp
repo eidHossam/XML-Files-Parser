@@ -116,7 +116,7 @@ vector<string> NetworkAnalysis::suggest_new_followers(string user)
 
             if(i != user_index && adjacency_matrix[vertex_index][i])
             {
-                if(find(suggested_new_followers.begin(), suggested_new_followers.end(), i) !=
+                if(find(suggested_new_followers.begin(), suggested_new_followers.end(), networkGraph.get_vertex(i)) !=
                     suggested_new_followers.end())
                 {
                     suggested_new_followers.push_back(networkGraph.get_vertex(i));
