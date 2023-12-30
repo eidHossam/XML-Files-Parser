@@ -109,9 +109,18 @@ vector<string> NetworkAnalysis::suggest_new_followers(string user)
     {
         for(int i = 0; i < vertices_max; i++)
         {
+            if(find(followers_indices.begin(), followers_indices.end(), i) != followers_indices.end())
+            {
+                continue;
+            }
+
             if(i != user_index && adjacency_matrix[vertex_index][i])
             {
-                suggested_new_followers.push_back(networkGraph.get_vertex(i));
+                if(find(suggested_new_followers.begin(), suggested_new_followers.end(), i) !=
+                    suggested_new_followers.end())
+                {
+                    suggested_new_followers.push_back(networkGraph.get_vertex(i));
+                }
             }
         } 
     }
