@@ -403,7 +403,7 @@ string XML_Parser::xml_format()
     /*1 - Build the tree */
     build_xml_tree();
 
-    printXML(file_tree->root, 0);
+    printXML(file_tree->root);
     return formated_xml_data; 
 }
 
