@@ -254,10 +254,8 @@ vector<string> XML_Parser::highlight_errors()
  * @return true: If the files contains any errors. 
  * @return false: If the files is error free.
  */
-
 bool XML_Parser::has_errors() 
 {
-
     /*If we already fixed the file then no need to check again*/
     if(fixed_xml_data != "")
     {
@@ -271,41 +269,38 @@ bool XML_Parser::has_errors()
     }
 
     bool error_flag = false;
+    string xml_data, tmp;
     
-    stack<string> tags;
-
-    regex _tag_regex("<([^<>]+)>");
+    stack<string> tags; /*Save the opening tags in the stack to check the consistency*/
+    stringstream stream(original_xml_data);
     
-    sregex_iterator _tag_iterator(original_xml_data.begin(),original_xml_data.end(),_tag_regex);
-    sregex_iterator _endtag_iterator; 
+    while (getline(stream,tmp, '<'))
+    {
+        trim(tmp);
+        size_t closingBracketPos = tmp.find('>');
 
-    while (_tag_iterator !=_endtag_iterator ) {
-        smatch match = *_tag_iterator;
-       
-        string tag = match.str();
-
-        // Check if this is a start tag or an end tag
-        if(tag[1] != '/') // Start tag
+        if(closingBracketPos != string::npos)
         {
-            string tag_name = tag.substr(1, tag.size() - 2); // Remove the angle brackets
-            tags.push(tag_name);
-        }
-        else // End tag
-        {
-            string tag_name = tag.substr(2, tag.size() - 3); // Remove the angle brackets
-            
-            /*If the type of the opening tag doesn't match the type of the closing tag then there is an error*/
-            if(tag_name == tags.top())
-            {
-                tags.pop();
-            }else{
-                error_flag = true;
-                break;
+            if(tmp[0] != '/') // Start tag
+            {                
+                /*Put the start tag in the line*/
+                string tagName = tmp.substr(0, closingBracketPos);
+                tags.push(tagName);
             }
-            
+            else // End tag
+            {
+                string tagName = tmp.substr(1, closingBracketPos - 1);
+                
+                if(tagName == tags.top())
+                /*If the type of the opening tag doesn't match the type of the closing tag then there is an error*/
+                {
+                    tags.pop();
+                }else{
+                    error_flag = true;
+                    break;
+                }
+            } 
         }
-
-        ++_tag_iterator;
     }
 
     return error_flag; 
