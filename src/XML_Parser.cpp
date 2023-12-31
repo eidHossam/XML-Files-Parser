@@ -160,80 +160,91 @@ string XML_Parser::get_formatted_xml_data()
 vector<string> XML_Parser::highlight_errors()
 {
     vector<string> errors;
-    /*Open the XML file*/
-    ifstream _xml_file(file_location);
+    
+    //if the file doesn't have errors then return 
+    if(!has_errors())
+    {
+        return errors;
+    }
+    
+    /*If we didn't parse the file yet then parse it*/
+    if(original_xml_data == "")
+    {
+        get_formatted_xml_data();
+    }
 
     bool leaveNode = false;
     
     string tmp;
     int tag_count = 0;
 
-    regex _tag_regex("<([^<>]+)>");
     stack<string> tags; /*Save the opening tags in the stack to check the consistency*/
     string closing_tag;
-
-    if( _xml_file.is_open())
+    
+    stringstream stream(original_xml_data);
+    while (getline(stream,tmp, '<'))
     {
-        while (getline(_xml_file,tmp))
-        {
-            sregex_iterator _tag_iterator(tmp.begin(),tmp.end(),_tag_regex);
-            sregex_iterator _endtag_iterator;
-            
-            while(_tag_iterator != _endtag_iterator)
-            {
-                smatch match = *_tag_iterator;
-                string tag = match.str();
+        trim(tmp);
+        size_t closingBracketPos = tmp.find('>');
 
-                if(tag[1] != '/') // Start tag
+        if(closingBracketPos != string::npos)
+        {
+            if(tmp[0] != '/') // Start tag
+            {
+                if(leaveNode)
+                {
+                    /*Missing closing tag*/
+                    errors.push_back("Missing closing tag \"" + tags.top() + "\" at tag number " + 
+                         to_string(tag_count));
+                    tags.pop();
+                    leaveNode = false;
+                }
+                string tag_name = tmp.substr(0, closingBracketPos); // Remove the angle brackets
+                tags.push(tag_name);
+
+                /*Check if this a leaveNode node by checking if it contains data*/
+                string tagData = tmp.substr(closingBracketPos + 1, tmp.length() - closingBracketPos);
+                if(!tagData.empty())
+                {
+                    leaveNode = true;
+                }
+            }
+            else // End tag
+            {
+                string tagName = tmp.substr(1, closingBracketPos - 1); // Remove the angle brackets
+                
+                if(tagName != tags.top())
                 {
                     if(leaveNode)
                     {
-                        /*Missing closing tag*/
-                        errors.push_back("Missing closing tag \"" + tags.top() + "\" at tag number " + 
-                             to_string(tag_count));
-                        tags.pop();
-                        leaveNode = false;
-                    }
-
-                    string tag_name = tag.substr(1, tag.size() - 2); // Remove the angle brackets
-                    tags.push(tag_name);
-
-                    /*Check if this a leaveNode node by checking if it contains data*/
-                    string data_field = extract_data_field(tmp);
-
-                    if(!data_field.empty())
-                    {
-                        leaveNode = true;
-                    }
-                    ++_tag_iterator;
-                }
-                else // End tag
-                {
-                    string tag_name = tag.substr(2, tag.size() - 3); // Remove the angle brackets
-
-                    if(tag_name != tags.top())
-                    {
-                        if(leaveNode)
+                        errors.push_back("Mismatch closing tag \"" + tags.top() + "\" at tag number " + 
+                            to_string(tag_count));
+                    }else{
+                        while(tagName != tags.top())
                         {
-                            errors.push_back("Mismatch closing tag \"" + tags.top() + "\" at tag number " + 
-                                to_string(tag_count));
-                            ++_tag_iterator;
-                        }else{
                             errors.push_back("Missing closing tag \"" + tags.top() + "\" at tag number " + 
                                 to_string(tag_count));
 
+                            tags.pop();
                         }
-                    }else{
-                        ++_tag_iterator;
                     }
-                    tags.pop();
-                    leaveNode = false;
-                }                
-                tag_count++;
-            }
+                }
+
+                tags.pop();
+                leaveNode = false;
+            }                
+            tag_count++;
         }
     }
-    
+
+    while(!tags.empty())
+    {
+        errors.push_back("Missing closing tag \"" + tags.top() + "\" at tag number " + 
+            to_string(tag_count++));
+
+        tags.pop();
+    }
+
     return errors;
 }
 
