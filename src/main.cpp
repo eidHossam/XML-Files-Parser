@@ -1,11 +1,3 @@
-#include <iostream>
-#include <string.h>
-#include <fstream>
-#include <bits/stdc++.h> 
-#include <stack>
-#include <queue>
-#include <list>
-#include <forward_list>
 #include "tree.h"
 #include "XML_Parser.h"
 
@@ -17,11 +9,23 @@ int main()
     string _xml_data;
     XML_Parser parser("src/sample.xml");
 
-    vector<string> posts = parser.findPosts("economy");
+    _xml_data = parser.get_raw_xml_data();
+    cout << _xml_data << endl;
 
-    for(auto post: posts)
+    vector<string> vec = parser.highlight_errors();
+
+    for(string s : vec)
     {
-        cout << post << endl;
+        cout << s << "\n";
     }
+
+
+    _xml_data = parser.get_fixed_xml_data();
+    cout << _xml_data << endl;
+
+    _xml_data = parser.xml_format();
+    cout << _xml_data << endl;
+
+    
     return 0;
 }
