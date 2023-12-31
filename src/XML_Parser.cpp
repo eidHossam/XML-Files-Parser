@@ -313,6 +313,11 @@ bool XML_Parser::has_errors()
  */
 string XML_Parser::fix_xml_data() 
 { 
+    if(fixed_xml_data != "") 
+    {
+        return fixed_xml_data;
+    }
+
     //if the file doesn't have errors then return 
     if(!has_errors())
     {
@@ -320,83 +325,65 @@ string XML_Parser::fix_xml_data()
         return fixed_xml_data;
     }
 
-    /*Open the XML file*/
-    ifstream _xml_file(file_location);
+    /*If we didn't parse the file yet then parse it*/
+    if(original_xml_data == "")
+    {
+        get_formatted_xml_data();
+    }
 
     bool leaveNode = false;
     
     string xml_data, tmp;
     
-    regex _tag_regex("<([^<>]+)>");
     stack<string> tags; /*Save the opening tags in the stack to check the consistency*/
-
-    if( _xml_file.is_open())
+    stringstream stream(original_xml_data);
+    
+    while (getline(stream,tmp, '<'))
     {
-        while (getline(_xml_file,tmp))
+        trim(tmp);
+
+        size_t closingBracketPos = tmp.find('>');
+
+        if(closingBracketPos != string::npos)
         {
-            sregex_iterator _tag_iterator(tmp.begin(),tmp.end(),_tag_regex);
-            sregex_iterator _endtag_iterator;
-            
-            /*If there is no tags then all of the line is data*/
-            if(_tag_iterator == _endtag_iterator && !tmp.empty())
+            if(tmp[0] != '/') // Start tag
             {
-                trim(tmp);
-                xml_data += tmp;
-                leaveNode = true;
-            }
-
-            while(_tag_iterator != _endtag_iterator)
-            {
-                smatch match = *_tag_iterator;
-                string tag = match.str();
-
-                if(tag[1] != '/') // Start tag
+                if(leaveNode)
                 {
-                    if(leaveNode)
-                    {
-                        /*Missing closing tag*/
-                        xml_data += "</" + tags.top() + ">"; 
-                        tags.pop();
-                        leaveNode = false;
-                    }
-
-                    /*Put the start tag in the line*/
-                    xml_data += match.str();
-                    
-                    string tag_name = tag.substr(1, tag.size() - 2); // Remove the angle brackets
-                    tags.push(tag_name);
-
-                    /*Check if this a leaveNode node by checking if it contains data*/
-                    string data_field = extract_data_field(tmp);
-
-                    if(!data_field.empty())
-                    {
-                        leaveNode = true;
-                        xml_data += data_field;
-                    }
-                }
-                else // End tag
-                {
-                    xml_data += "</" + tags.top() + ">";
-
+                    /*Missing closing tag*/
+                    xml_data += "</" + tags.top() + ">"; 
                     tags.pop();
                     leaveNode = false;
-                }                
-                ++_tag_iterator;
+                }
+                
+                /*Put the start tag in the line*/
+                string tagName = tmp.substr(0, closingBracketPos);
+                xml_data += "<" + tagName + ">";
+                tags.push(tagName);
+
+                /*Check if this a leaveNode node by checking if it contains data*/
+                string tagData = tmp.substr(closingBracketPos + 1, tmp.length() - closingBracketPos);
+                if(!tagData.empty())
+                {
+                    leaveNode = true;
+                    xml_data += tagData;
+                }
             }
+            else // End tag
+            {
+                xml_data += "</" + tags.top() + ">";
+                tags.pop();
+                leaveNode = false;
+            } 
         }
     }
-    
+
     /*Check if there opening tags without closing tags and fix them*/
     while(!tags.empty())
     {
         xml_data += "</" + tags.top() + ">";
         tags.pop();
     }
-
-    //Delete the first empty line
-    int text_start_index = xml_data.find_first_of('<');
-    xml_data = xml_data.substr(text_start_index, xml_data.size() - text_start_index);
 
     fixed_xml_data = xml_data;
     return fixed_xml_data;
