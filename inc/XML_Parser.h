@@ -31,7 +31,7 @@ private:
     
     string extract_data_field(string line);
 
-    void printXML(TreeNode* node, int depth);
+    void printXML(TreeNode* node);
 
     void findPosts(TreeNode* node, const string& word, vector<string>& posts);
 

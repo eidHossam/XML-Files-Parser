@@ -96,9 +96,9 @@ string XML_Parser::extract_data_field(string line)
     return data_field;
 }
 
-void XML_Parser::printXML(TreeNode* node, int depth) {
-    for (int i = 0; i < depth; ++i) {
-        formated_xml_data += "    "; // 4 spaces for each level of depth
+void XML_Parser::printXML(TreeNode* node) {
+    for (int i = 0; i < node->_node_level; ++i) {
+        formated_xml_data += "    "; // 4 spaces for each level of node->_node_level
     }
 
     formated_xml_data += "<" + node->_tag_name + ">";
@@ -111,9 +111,9 @@ void XML_Parser::printXML(TreeNode* node, int depth) {
         formated_xml_data += "\n";
         for (const auto& child : node->children)
         {
-            printXML(child, depth + 1);
+            printXML(child);
         }
-        for (int i = 0; i < depth; ++i) {
+        for (int i = 0; i < node->_node_level; ++i) {
             formated_xml_data += "    ";
         }
     }
