@@ -58,6 +58,9 @@ string XML_Parser::get_xml_data(int formatting) {
             }
         }
     }
+    
+    // Close the input file
+    _xml_file.close();
 
     original_xml_data = _xml_data;
     return _xml_data;
