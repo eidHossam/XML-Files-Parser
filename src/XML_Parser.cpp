@@ -432,63 +432,44 @@ XML_Tree* XML_Parser::build_xml_tree()
     TreeNode* currentNode = NULL;
     int node_level = 0;
 
-    regex _tag_regex("<([^<>]+)>");
-
-
     string tmp;
     istringstream stream(fixed_xml_data); /*Convert the string into a stream to read it line by line*/
 
-    while(getline(stream, tmp))
+    while(getline(stream, tmp, '<'))
     {
+        trim(tmp);
+        
+        // Extract tag name
+        size_t closingBracketPos = tmp.find('>');
 
-        sregex_iterator _tag_iterator(tmp.begin(),tmp.end(),_tag_regex);
-        sregex_iterator _endtag_iterator; 
-
-        /*If there is no tags then all of the line is data*/
-        if(_tag_iterator == _endtag_iterator && !tmp.empty())
+        if (closingBracketPos != string::npos) 
         {
-            trim(tmp);
-            currentNode->_tag_data += tmp;
-        }
 
-        while (_tag_iterator !=_endtag_iterator ) {
-            smatch match = *_tag_iterator;
-
-            string tag = match.str();
-
-            // Check if this is a start tag or an end tag
-            if(tag[1] != '/') // Start tag
-            {
-                /*Check if this a leaveNode node by checking if it contains data*/
-                string data_field = extract_data_field(tmp);
-                
-                string tag_name = tag.substr(1, tag.size() - 2); // Remove the angle brackets
+            // Check if it's an opening tag
+            if (tmp[0] != '/') {
+                string tagName = tmp.substr(0, closingBracketPos);
+                string tagData = tmp.substr(closingBracketPos + 1, tmp.length() - closingBracketPos);
 
                 if(currentNode == NULL) // If there is no current node, this is the root
                 {
-                    currentNode = TreeNode::GetNewNode(tag_name, data_field);
+                    currentNode = TreeNode::GetNewNode(tagName, tagData);
                     file_tree->root = currentNode;
                 }
                 else // Otherwise, this is a child node
                 {
-                    file_tree->InsertChild(currentNode, tag_name, data_field);
+                    file_tree->InsertChild(currentNode,tagName , tagData);
                     currentNode = currentNode->children.back();
                 }
 
-                currentNode->_node_level = node_level;
+                currentNode->_node_level = node_level++;
 
-                node_level++;  /*Increment the node level when we encounter an opening tag*/
-            }
-            else // End tag
-            {
+            } else {
+                // It's a closing tag, move back to the parent
                 node_level--;
-                currentNode = currentNode->parent; // Move up to the parent node            
+                currentNode = currentNode->parent;
             }
-
-            ++_tag_iterator;
         }
     }
-
     return file_tree;
 }
 
