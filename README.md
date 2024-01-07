@@ -70,6 +70,16 @@ This project is a GUI based program used to parse and visualize an XML file repr
 
 # snapshots # 
 
+### Main Window
+
+### Reading file
+
+### Minifyed file
+
+### Network analysis
+
+### Post search
+
 # setup #
 To run this project, you need to download the release zip file. 
 
