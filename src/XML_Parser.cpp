@@ -407,6 +407,53 @@ string XML_Parser::xml_format()
     return formated_xml_data;
 }
 
+void XML_Parser::findPosts(TreeNode* node, const string& word, vector<string>& posts) {
+    static string body;
+    static bool found_post = false;
+    if (node == NULL)
+        return;
+
+    if (node->_tag_name == "body") 
+    {
+        found_post = false;
+        body = node->_tag_data;
+        string lower_case_body = body;
+        transform(lower_case_body.begin(), lower_case_body.end(), lower_case_body.begin(), ::tolower);
+
+        if(lower_case_body.find(word) != string::npos)
+        {
+            posts.push_back(body);
+            found_post = true;
+        }
+    }else if(node->_tag_name == "topic")
+    {
+        string data = node->_tag_data;
+        string lower_case_data = data;
+        transform(lower_case_data.begin(), lower_case_data.end(), lower_case_data.begin(), ::tolower);
+
+        if(!found_post && lower_case_data.find(word) != string::npos)
+        {
+            posts.push_back(body);
+            found_post = true;
+        }
+    }
+    
+    for (auto child : node->children) {
+        findPosts(child, word, posts);
+    }
+}
+
+vector<string> XML_Parser::findPosts(const string& word) {
+    vector<string> posts;
+
+    build_xml_tree();
+    
+    string lower_case_word = word;
+    transform(lower_case_word.begin(), lower_case_word.end(), lower_case_word.begin(), ::tolower);
+
+    findPosts(this->file_tree->root, lower_case_word, posts);
+    return posts;
+}
 /**
  * @brief Function to convert the xml data into a tree.
  *
