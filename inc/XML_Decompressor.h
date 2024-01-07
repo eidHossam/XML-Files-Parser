@@ -18,11 +18,10 @@ private:
 
     std::string convertToBinary(unsigned char num);
     void constructTree(std::string& path, char character);
-
-public:
-    HuffmanDecompressor(const std::string& input, const std::string& output);
     void rebuildHuffmanTree();
     void saveDecoding();
+public:
+    HuffmanDecompressor(const std::string& input, const std::string& output);
     std::string decompressFile(const std::string& compressedFile, const std::string& outputPath);
 };
 
