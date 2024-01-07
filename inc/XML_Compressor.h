@@ -1,24 +1,43 @@
 #ifndef XML_COMPRESSOR_H_
 #define XML_COMPRESSOR_H_
 
-#include <unordered_map>
-#include <queue>
 #include <string>
+#include <queue>
+#include <vector>
+#include <fstream>
 #include "Node.h"
 
-class Compressor {
-public:
-    Compressor();
-    std::string compress(const std::string& text);
-    Node* getRoot() const;
-
+class HuffmanCompressor {
 private:
-    Node* root;
-    Node* getNode(char ch, int freq, Node* left, Node* right);
-    struct comp;
-    void Huffman_Encode(Node* root, std::string str, std::unordered_map<char, std::string>& huffmanCode);
-    void Calculate_Frequency_Map(std::unordered_map<char, int>& freq, const std::string& text);
-    Node* Create_Huffman_Tree(std::priority_queue<Node*, std::vector<Node*>, comp>& PriorityQ, std::unordered_map<char, int>& freq);
+    class compare {
+    public:
+        bool operator()(const huffman_node* c1, const huffman_node* c2) const {
+            return c1->freq > c2->freq;
+        }
+    };
+
+    huffman_node* node_array[128];
+    std::ifstream in_file;
+    std::ofstream out_file;
+    huffman_node* root;
+    std::string inFileName;
+    std::string outFileName;
+    std::priority_queue<huffman_node*, std::vector<huffman_node*>, compare> pq;
+
+    void createNodeArray();
+    void traverse(huffman_node* node, std::string code);
+    int binaryToDecimal(const std::string& in);  // Added missing semicolon
+    std::string decimalToBinary(int in);
+    void buildTree(std::string& path, char aCode);
+
+public:
+    HuffmanCompressor(const std::string& input, const std::string& output);
+    void createPriorityQueue();
+    void createHuffmanTree();
+    void calculateHuffmanCodes();
+    void saveCompressedFile();
+    std::string compressFile(const std::string& inputFile, const std::string& outputPath);
+
 };
 
-#endif 
+#endif

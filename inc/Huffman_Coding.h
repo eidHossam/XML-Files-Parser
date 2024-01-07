@@ -11,8 +11,8 @@ public:
     std::string decompress(const std::string& text);
 
 private:
-    Compressor compressor;
-    Decompressor decompressor;
+    HuffmanCompressor compressor;
+    HuffmanDecompressor decompressor;
 };
 
-#endif 
+#endif

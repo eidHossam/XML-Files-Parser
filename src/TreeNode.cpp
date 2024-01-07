@@ -9,6 +9,81 @@ TreeNode::TreeNode(string tag_name, string tag_data){
     visited=false; //it helps when traversing the tree to convert to json
     parent = NULL;
 }
+
+void TreeNode::preOrderTraversalUsersHelper(TreeNode * node ,vector<TreeNode*>& users ) {
+    if (node == NULL)
+        return;
+
+    if (node->_tag_name=="user")
+    {
+        users.push_back(node);
+    }
+    
+
+    for (auto child: node -> children) {
+        preOrderTraversalUsersHelper(child,users);
+    }
+}
+
+vector<TreeNode*> TreeNode::no_Of_Users_Vector()
+{
+    vector<TreeNode*> users;
+    preOrderTraversalUsersHelper(this,users);
+    return users;
+}
+vector <TreeNode*> TreeNode:: id_Of_Users()
+{
+    vector<TreeNode*> ids;
+    vector<TreeNode*> users=this->no_Of_Users_Vector();
+    for(auto var : users)
+    {
+        for(auto child : var->children)
+        {
+            if(child->_tag_name=="id")
+            {     
+                ids.push_back(child);
+                break;
+            }    
+        }
+    }
+    return ids;
+
+}
+void TreeNode::preOrderTraversalfollowerIDHelper(TreeNode * node ,vector<string>& followerids ) {
+    if (node == NULL)
+        return;
+
+    if (node->_tag_name=="follower")
+    {
+        followerids.push_back(node->children[0]->_tag_data);
+    }
+    
+
+    for (auto child: node -> children) {
+        preOrderTraversalfollowerIDHelper(child,followerids);
+    }
+}
+vector<vector<string>> TreeNode::followersID()
+{
+   
+    vector<TreeNode*> users=this->no_Of_Users_Vector();
+  
+    vector<vector<string>> followersids;
+    
+
+    vector<string> temp;
+    int i=0;
+    for(auto var : users)
+    {
+
+       preOrderTraversalfollowerIDHelper(var,temp);
+       followersids.push_back(temp);
+       temp.clear();
+       i++;
+
+    }
+    return followersids;
+}
 bool TreeNode::has_Brother()
 {
     if(parent==NULL)

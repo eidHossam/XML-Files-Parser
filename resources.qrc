@@ -1,0 +1,8 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource>
+        <file>assets/download.jpeg</file>
+        <file>assets/flag.png</file>
+        <!-- Add more image files as needed -->
+    </qresource>
+</RCC>
