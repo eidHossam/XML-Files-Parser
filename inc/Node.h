@@ -6,8 +6,8 @@ public:
     char id;
     int freq;
     std::string code;
-    huffman_node* left;
-    huffman_node* right;
+    huffman_node* left=NULL;
+    huffman_node* right=NULL;
 };
 
 
