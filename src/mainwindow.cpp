@@ -3,17 +3,15 @@
 #include <QFileDialog>
 #include "XML_Parser.h"
 #include "XML_to_json.h"
-#include "Huffman_Coding.h"
 #include "resultwindow.h"
 #include "editwindow.h"
 #include "GraphType.h"
 #include "NetworkAnalysis.h"
+#include "../inc/XML_Compressor.h"
+#include "../inc/XML_Decompressor.h"
 #include <fstream>
 using namespace std;
 
-
-
-HuffmanCoding huffman;
 string compressedData;
 XML_Parser parser;
 string currentData;
@@ -29,14 +27,13 @@ void MainWindow::initButtons(){
     ui->show_errors_button->setEnabled(false);
     ui->edit_data_button->setEnabled(false);
     ui->save_current_button->setEnabled(false);
-    ui->decompress_button->setEnabled(false);
     ui->see_file_data_button->setEnabled(false);
     ui->json_button->setEnabled(false);
-    ui->compress_button->setEnabled(false);
     ui->undo_button->setEnabled(false);
     ui->redo_button->setEnabled(false);
     ui->save_minified_button->setEnabled(false);
     ui->search_word_button->setEnabled(false);
+    ui->format_button->setEnabled(false);
 }
 
 void MainWindow::checkFile(){
@@ -55,11 +52,11 @@ void MainWindow::checkFile(){
     ui->edit_data_button->setEnabled(true);
     ui->save_current_button->setEnabled(true);
     ui->json_button->setEnabled(true);
-    ui->compress_button->setEnabled(true);
     ui->see_file_data_button->setEnabled(true);
     ui->save_minified_button->setEnabled(true);
     ui->search_word_button->setEnabled(true);
-    currentData = parser.get_fixed_xml_data();
+    ui->format_button->setEnabled(true);
+    currentData = parser.get_formatted_xml_data();
 }
 
 void MainWindow::open_result_window(string info){
@@ -190,13 +187,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_decompress_button_clicked()
 {
-    string data =huffman.decompress(compressedData);
-    QString fileName = ui->address_label->text();
-     parser= parseData(fileName);
-    string formattedData =parser.get_formatted_xml_data();
-     open_result_window(formattedData);
+    QString extension = "xml";
+    QString filter = "Text File (*." + extension + ")"; // create filter from extension
+    QString inputFile = QFileDialog::getOpenFileName(this,tr("Open File"), "/home", tr("Files (*.bin)"));
+    QString outputFile = QFileDialog::getSaveFileName(0, "Save file", QDir::currentPath(), filter);
+    cout << inputFile.toStdString() << " ------- " << outputFile.toStdString() << endl;
 
+    HuffmanDecompressor decompressor(inputFile.toStdString(), outputFile.toStdString());
+    decompressor.decompressFile(inputFile.toStdString(), outputFile.toStdString());  // Only pass the output file path
 }
+
 
 
 void MainWindow::on_fix_data_button_clicked()
@@ -229,14 +229,16 @@ void MainWindow::on_json_button_clicked()
 
 void MainWindow::on_compress_button_clicked()
 {
-    parser = parseData(fileName);
-    string data = parser.get_raw_xml_data();
-    compressedData = huffman.compress(data);
+    QString extension = "bin";
+    QString filter = "Text File (*." + extension + ")"; // create filter from extension
+    QString inputFile = QFileDialog::getOpenFileName(this,tr("Open File"), "/home", tr("Files (*.xml)"));
+    QString outputFile = QFileDialog::getSaveFileName(0, "Save file", QDir::currentPath(),filter);
+    cout<<inputFile.toStdString()<<" ----------- "<<outputFile.toStdString()<<endl;
+    HuffmanCompressor compressor(inputFile.toStdString(), outputFile.toStdString());
+    compressor.compressFile(inputFile.toStdString(), outputFile.toStdString());
 
-    open_result_window(compressedData);
 
-    saveToCompressedFile("bin",compressedData);
-    ui->decompress_button->setEnabled(true);
+
 }
 
 
@@ -262,11 +264,13 @@ void MainWindow::on_locate_address_button_clicked()
     initButtons();
     fileName = ui->address_edit->toPlainText();
     if(canOpenFile(fileName.toStdString())){     parser = parseData(fileName);
-        checkFile();}
+        checkFile();
+    }
     else{
         ui->address_label->setText("File can't be opened");
         ui->error_label->setText("File extention is wrong or no file detected");
     }
+
 
 }
 

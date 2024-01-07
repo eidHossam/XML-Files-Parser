@@ -13,13 +13,14 @@ HEADERS += inc/tree.h \
            inc/XML_Compressor.h \
            inc/XML_Decompressor.h \
            inc/XML_to_json.h \
-           inc/Huffman_Coding.h \
+           inc/XML_Parser.h \
            inc/mainwindow.h \
            inc/TreeNode.h \
            inc/NetworkAnalysis.h \
            inc/GraphType.h \
 
 SOURCES += src/main.cpp \
+    src/Node.cpp \
            src/editwindow.cpp \
            src/resultwindow.cpp \
            src/tree.cpp \
@@ -31,7 +32,6 @@ SOURCES += src/main.cpp \
            src/XML_to_json.cpp \
            src/NetworkAnalysis.cpp \
            src/GraphType.cpp \
-           src/Huffman_Coding.cpp\
 
 
 INCLUDEPATH += "C:/Program Files/Graphviz/include"
