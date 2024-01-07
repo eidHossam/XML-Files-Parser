@@ -4,7 +4,7 @@
 
 int main() {
     // Compression Example
-    std::string inputFilePath = "test.txt";
+    std::string inputFilePath = "sample.xml";
     std::string compressedFilePath = "compressedFile.bin";
 
     // Create an object of HuffmanCompressor

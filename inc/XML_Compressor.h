@@ -26,16 +26,15 @@ private:
 
     void createNodeArray();
     void traverse(huffman_node* node, std::string code);
-    int binaryToDecimal(const std::string& in);  // Added missing semicolon
-    std::string decimalToBinary(int in);
+    int binaryToDecimal(const std::string& in);  
     void buildTree(std::string& path, char aCode);
-
-public:
-    HuffmanCompressor(const std::string& input, const std::string& output);
     void createPriorityQueue();
     void createHuffmanTree();
     void calculateHuffmanCodes();
     void saveCompressedFile();
+
+public:
+    HuffmanCompressor(const std::string& input, const std::string& output);
     std::string compressFile(const std::string& inputFile, const std::string& outputPath);
 
 };
