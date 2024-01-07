@@ -53,8 +53,7 @@ public:
      * @param file_location: string of the file location to be parsed.
      */
     XML_Parser(string file_location);
-    void findPosts(TreeNode* node, const string& word, vector<string>& posts);
-    vector<string> findPosts(const string& word);
+    
     /**
      * @brief Function to return the XML data in the given file without any formatting(spaces - new lines).
      *
