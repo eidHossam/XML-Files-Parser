@@ -71,14 +71,19 @@ This project is a GUI based program used to parse and visualize an XML file repr
 # snapshots # 
 
 ### Main Window
+![Main_window](https://github.com/eidHossam/XML-Files-Parser/assets/106603484/dbc7c103-03c5-41d5-b8ec-bcdf260f16c4)
 
 ### Reading file
+![Reading_File](https://github.com/eidHossam/XML-Files-Parser/assets/106603484/20ac6449-166c-4422-808d-146ca5396d6a)
 
 ### Minifyed file
+![Minified](https://github.com/eidHossam/XML-Files-Parser/assets/106603484/fd95cd9b-1482-47aa-ada9-723d1940fdff)
 
 ### Network analysis
+![Net_analysis](https://github.com/eidHossam/XML-Files-Parser/assets/106603484/909fa015-bbbf-45c9-936a-a4fff7978077)
 
 ### Post search
+![Post_Search](https://github.com/eidHossam/XML-Files-Parser/assets/106603484/cb4f0f15-8981-4f25-b468-29852effc071)
 
 # setup #
 To run this project, you need to download the release zip file. 
