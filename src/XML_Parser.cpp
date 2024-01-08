@@ -16,13 +16,13 @@
 
 /**
  * @brief Default constructor of the class.
- *
+ * 
  */
 XML_Parser::XML_Parser(){}
 
 /**
  * @brief Constructor of the XML parser class.
- *
+ * 
  * @param file_location: string of the file location to be parsed.
  */
 XML_Parser::XML_Parser(string file_location) {
@@ -47,7 +47,7 @@ string XML_Parser::get_xml_data(int formatting) {
 
     string _xml_data, tmp;
     if (_xml_file.is_open()) {
-        while (getline(_xml_file, tmp))
+        while (getline(_xml_file, tmp)) 
         {
             if(formatting == FORMAT_RAW)
             {
@@ -58,7 +58,7 @@ string XML_Parser::get_xml_data(int formatting) {
             }
         }
     }
-
+    
     // Close the input file
     _xml_file.close();
 
@@ -76,7 +76,7 @@ void XML_Parser::trim(string& str) {
 }
 
 string XML_Parser::extract_data_field(string line)
-{
+{ 
     string data_field = "";
 
     trim(line);
@@ -95,7 +95,7 @@ string XML_Parser::extract_data_field(string line)
     }else{
         data_field = line.substr(data_start_index, (data_end_index - data_start_index));
     }
-
+    
     return data_field;
 }
 
@@ -105,11 +105,11 @@ void XML_Parser::printXML(TreeNode* node) {
     }
 
     formated_xml_data += "<" + node->_tag_name + ">";
-
+    
     if (!node->_tag_data.empty())
     {
         formated_xml_data += node->_tag_data;
-    } else if (!node->children.empty())
+    } else if (!node->children.empty()) 
     {
         formated_xml_data += "\n";
         for (const auto& child : node->children)
@@ -134,7 +134,7 @@ void XML_Parser::printXML(TreeNode* node) {
 
 /**
 * @brief Function to return the XML data in the given file without any formatting(spaces - new lines).
-*
+* 
 * @return string: The xml data.
 */
 string XML_Parser::get_raw_xml_data()
@@ -144,8 +144,8 @@ string XML_Parser::get_raw_xml_data()
 
 /**
 * @brief Function to return the XML data in the given file with formatting(spaces - new lines).
-*
-* @return string: The xml data.
+* 
+* @return string: The xml data. 
 */
 string XML_Parser::get_formatted_xml_data()
 {
@@ -154,21 +154,21 @@ string XML_Parser::get_formatted_xml_data()
 
 /**
  * @brief Function to highlight the exact place of the error (if there is one) by typing "ERROR" where is one.
- *
- * @return vector<string>:List containg all the errors.
+ * 
+ * @return vector<string>:List containg all the errors.  
  */
 vector<string> XML_Parser::highlight_errors()
 {
     vector<string> errors;
 
-    //if the file doesn't have errors then return
-    if(!has_errors())
+    // if the file doesn't have errors then return 
+    if (!has_errors())
     {
         return errors;
     }
 
-    /*If we didn't parse the file yet then parse it*/
-    if(original_xml_data == "")
+    /* If we didn't parse the file yet then parse it */
+    if (original_xml_data == "")
     {
         get_formatted_xml_data();
     }
@@ -176,24 +176,24 @@ vector<string> XML_Parser::highlight_errors()
     bool leaveNode = false;
 
     string tmp;
-    int tag_count = 0;
+    int tag_count = 1; // Start counting from 1
 
-    stack<string> tags; /*Save the opening tags in the stack to check the consistency*/
+    stack<string> tags; /* Save the opening tags in the stack to check the consistency */
     string closing_tag;
 
     stringstream stream(original_xml_data);
-    while (getline(stream,tmp, '<'))
+    while (getline(stream, tmp, '<'))
     {
         trim(tmp);
         size_t closingBracketPos = tmp.find('>');
 
-        if(closingBracketPos != string::npos)
+        if (closingBracketPos != string::npos)
         {
-            if(tmp[0] != '/') // Start tag
+            if (tmp[0] != '/') // Start tag
             {
-                if(leaveNode)
+                if (leaveNode)
                 {
-                    /*Missing closing tag*/
+                    /* Missing closing tag */
                     errors.push_back("Missing closing tag \"" + tags.top() + "\" at tag number " +
                                      to_string(tag_count));
                     tags.pop();
@@ -202,9 +202,9 @@ vector<string> XML_Parser::highlight_errors()
                 string tag_name = tmp.substr(0, closingBracketPos); // Remove the angle brackets
                 tags.push(tag_name);
 
-                /*Check if this a leaveNode node by checking if it contains data*/
+                /* Check if this is a leaveNode node by checking if it contains data */
                 string tagData = tmp.substr(closingBracketPos + 1, tmp.length() - closingBracketPos);
-                if(!tagData.empty())
+                if (!tagData.empty())
                 {
                     leaveNode = true;
                 }
@@ -213,31 +213,50 @@ vector<string> XML_Parser::highlight_errors()
             {
                 string tagName = tmp.substr(1, closingBracketPos - 1); // Remove the angle brackets
 
-                if(tagName != tags.top())
+                if (tags.empty())
                 {
-                    if(leaveNode)
+                    /* Missing opening tag */
+                    errors.push_back("Missing opening tag \"" + tagName + "\" at tag number " +
+                                     to_string(tag_count++));
+                }
+                else if (tagName != tags.top())
+                {
+                    if (leaveNode)
                     {
                         errors.push_back("Mismatch closing tag \"" + tags.top() + "\" at tag number " +
-                                         to_string(tag_count));
-                    }else{
-                        while(tagName != tags.top())
+                                         to_string(tag_count++));
+                    }
+                    else
+                    {
+                        while (tagName != tags.top())
                         {
                             errors.push_back("Missing closing tag \"" + tags.top() + "\" at tag number " +
-                                             to_string(tag_count));
+                                             to_string(tag_count++));
 
                             tags.pop();
+
+                            if (tags.empty())
+                            {
+                                /* Missing opening tag */
+                                errors.push_back("Missing opening tag \"" + tagName + "\" at tag number " +
+                                                 to_string(tag_count++));
+                                break;
+                            }
                         }
                     }
                 }
 
-                tags.pop();
+                if (!tags.empty())
+                {
+                    tags.pop();
+                }
                 leaveNode = false;
             }
             tag_count++;
         }
     }
 
-    while(!tags.empty())
+    while (!tags.empty())
     {
         errors.push_back("Missing closing tag \"" + tags.top() + "\" at tag number " +
                          to_string(tag_count++));
@@ -250,11 +269,11 @@ vector<string> XML_Parser::highlight_errors()
 
 /**
  * @brief This function checks if the given file has any inconsistencies in the tags.
- *
- * @return true: If the files contains any errors.
+ * 
+ * @return true: If the files contains any errors. 
  * @return false: If the files is error free.
  */
-bool XML_Parser::has_errors()
+bool XML_Parser::has_errors() 
 {
     /*If we already fixed the file then no need to check again*/
     if(fixed_xml_data != "")
@@ -270,10 +289,10 @@ bool XML_Parser::has_errors()
 
     bool error_flag = false;
     string xml_data, tmp;
-
+    
     stack<string> tags; /*Save the opening tags in the stack to check the consistency*/
     stringstream stream(original_xml_data);
-
+    
     while (getline(stream,tmp, '<'))
     {
         trim(tmp);
@@ -282,7 +301,7 @@ bool XML_Parser::has_errors()
         if(closingBracketPos != string::npos)
         {
             if(tmp[0] != '/') // Start tag
-            {
+            {                
                 /*Put the start tag in the line*/
                 string tagName = tmp.substr(0, closingBracketPos);
                 tags.push(tagName);
@@ -290,7 +309,7 @@ bool XML_Parser::has_errors()
             else // End tag
             {
                 string tagName = tmp.substr(1, closingBracketPos - 1);
-
+                
                 if(tagName == tags.top())
                 /*If the type of the opening tag doesn't match the type of the closing tag then there is an error*/
                 {
@@ -299,34 +318,34 @@ bool XML_Parser::has_errors()
                     error_flag = true;
                     break;
                 }
-            }
+            } 
         }
     }
 
-    return error_flag;
+    return error_flag; 
 }
 
 /**
  * @brief Function to fix the errors present in the XML file.
- *
- * @return string: The xml data.
+ * 
+ * @return string: The xml data.  
  */
 string XML_Parser::fix_xml_data()
 {
-    if(fixed_xml_data != "")
+    if (fixed_xml_data != "")
     {
         return fixed_xml_data;
     }
 
-    //if the file doesn't have errors then return
-    if(!has_errors())
+    // if the file doesn't have errors then return
+    if (!has_errors())
     {
         fixed_xml_data = original_xml_data;
         return fixed_xml_data;
     }
 
-    /*If we didn't parse the file yet then parse it*/
-    if(original_xml_data == "")
+    /* If we didn't parse the file yet then parse it */
+    if (original_xml_data == "")
     {
         get_formatted_xml_data();
     }
@@ -335,35 +354,35 @@ string XML_Parser::fix_xml_data()
 
     string xml_data, tmp;
 
-    stack<string> tags; /*Save the opening tags in the stack to check the consistency*/
+    stack<string> tags; /* Save the opening tags in the stack to check the consistency */
     stringstream stream(original_xml_data);
 
-    while (getline(stream,tmp, '<'))
+    while (getline(stream, tmp, '<'))
     {
         trim(tmp);
 
         size_t closingBracketPos = tmp.find('>');
 
-        if(closingBracketPos != string::npos)
+        if (closingBracketPos != string::npos)
         {
-            if(tmp[0] != '/') // Start tag
+            if (tmp[0] != '/') // Start tag
             {
-                if(leaveNode)
+                if (leaveNode)
                 {
-                    /*Missing closing tag*/
+                    /* Missing closing tag */
                     xml_data += "</" + tags.top() + ">";
                     tags.pop();
                     leaveNode = false;
                 }
 
-                /*Put the start tag in the line*/
+                /* Put the start tag in the line */
                 string tagName = tmp.substr(0, closingBracketPos);
                 xml_data += "<" + tagName + ">";
                 tags.push(tagName);
 
-                /*Check if this a leaveNode node by checking if it contains data*/
+                /* Check if this is a leaveNode node by checking if it contains data */
                 string tagData = tmp.substr(closingBracketPos + 1, tmp.length() - closingBracketPos);
-                if(!tagData.empty())
+                if (!tagData.empty())
                 {
                     leaveNode = true;
                     xml_data += tagData;
@@ -371,15 +390,34 @@ string XML_Parser::fix_xml_data()
             }
             else // End tag
             {
-                xml_data += "</" + tags.top() + ">";
-                tags.pop();
-                leaveNode = false;
+                string endTagName = tmp.substr(1, closingBracketPos - 1);
+                if (!tags.empty())
+                {
+                    if (endTagName != tags.top())
+                    {
+                        /* Missing opening tag, add it */
+                        xml_data += "<" + endTagName + ">";
+                        tags.push(endTagName);
+                    }
+                    else
+                    {
+                        xml_data += "</" + tags.top() + ">";
+                        tags.pop();
+                        leaveNode = false;
+                    }
+                }
+                else
+                {
+                    /* Missing opening tag, add it */
+                    xml_data += "<" + endTagName + ">";
+                    tags.push(endTagName);
+                }
             }
         }
     }
 
-    /*Check if there opening tags without closing tags and fix them*/
-    while(!tags.empty())
+    /* Check if there are opening tags without closing tags and fix them */
+    while (!tags.empty())
     {
         xml_data += "</" + tags.top() + ">";
         tags.pop();
@@ -391,11 +429,11 @@ string XML_Parser::fix_xml_data()
 
 /**
  * @brief Function to fix the formatting of the file(indentation - new lines) for the file to be more readable.
- *
- * @return string: The formatted xml data.
+ * 
+ * @return string: The formatted xml data.  
  */
-string XML_Parser::xml_format()
-{
+string XML_Parser::xml_format() 
+{   
     if(formated_xml_data != "")
     {
         return formated_xml_data;
@@ -404,63 +442,16 @@ string XML_Parser::xml_format()
     build_xml_tree();
 
     printXML(file_tree->root);
-    return formated_xml_data;
+    return formated_xml_data; 
 }
 
-void XML_Parser::findPosts(TreeNode* node, const string& word, vector<string>& posts) {
-    static string body;
-    static bool found_post = false;
-    if (node == NULL)
-        return;
-
-    if (node->_tag_name == "body") 
-    {
-        found_post = false;
-        body = node->_tag_data;
-        string lower_case_body = body;
-        transform(lower_case_body.begin(), lower_case_body.end(), lower_case_body.begin(), ::tolower);
-
-        if(lower_case_body.find(word) != string::npos)
-        {
-            posts.push_back(body);
-            found_post = true;
-        }
-    }else if(node->_tag_name == "topic")
-    {
-        string data = node->_tag_data;
-        string lower_case_data = data;
-        transform(lower_case_data.begin(), lower_case_data.end(), lower_case_data.begin(), ::tolower);
-
-        if(!found_post && lower_case_data.find(word) != string::npos)
-        {
-            posts.push_back(body);
-            found_post = true;
-        }
-    }
-    
-    for (auto child : node->children) {
-        findPosts(child, word, posts);
-    }
-}
-
-vector<string> XML_Parser::findPosts(const string& word) {
-    vector<string> posts;
-
-    build_xml_tree();
-    
-    string lower_case_word = word;
-    transform(lower_case_word.begin(), lower_case_word.end(), lower_case_word.begin(), ::tolower);
-
-    findPosts(this->file_tree->root, lower_case_word, posts);
-    return posts;
-}
 /**
  * @brief Function to convert the xml data into a tree.
- *
+ * 
  * @return XML_Tree*: a pointer to the tree object.
  */
 XML_Tree* XML_Parser::build_xml_tree()
-{
+{    
     /*If we already built the tree once don't do it again*/
     if(file_tree)
     {
@@ -485,11 +476,11 @@ XML_Tree* XML_Parser::build_xml_tree()
     while(getline(stream, tmp, '<'))
     {
         trim(tmp);
-
+        
         // Extract tag name
         size_t closingBracketPos = tmp.find('>');
 
-        if (closingBracketPos != string::npos)
+        if (closingBracketPos != string::npos) 
         {
 
             // Check if it's an opening tag
@@ -526,7 +517,7 @@ void XML_Parser::findPosts(TreeNode* node, const string& word, vector<string>& p
     if (node == NULL)
         return;
 
-    if (node->_tag_name == "body")
+    if (node->_tag_name == "body") 
     {
         found_post = false;
         body = node->_tag_data;
@@ -559,7 +550,7 @@ vector<string> XML_Parser::findPosts(const string& word) {
     vector<string> posts;
 
     build_xml_tree();
-
+    
     string lower_case_word = word;
     transform(lower_case_word.begin(), lower_case_word.end(), lower_case_word.begin(), ::tolower);
 
@@ -588,8 +579,9 @@ string XML_Parser::get_original_xml_data(){
 string XML_Parser::get_fixed_xml_data(){
     fix_xml_data();
 
-    return fixed_xml_data;
+    return fixed_xml_data; 
 }
 /**
   * @}
   */
+
