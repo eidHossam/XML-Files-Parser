@@ -46,20 +46,6 @@ int HuffmanCompressor::binaryToDecimal(const std::string& in) {
     return result;
 }
 
-std::string HuffmanCompressor::decimalToBinary(int in) {
-    std::string temp = "";
-    std::string result = "";
-    while (in) {
-        temp += ('0' + in % 2);
-        in /= 2;
-    }
-    result.append(8 - temp.size(), '0');
-    for (int i = temp.size() - 1; i >= 0; i--) {
-        result += temp[i];
-    }
-    return result;
-}
-
 void HuffmanCompressor::buildTree(std::string& path, char aCode) {
     huffman_node* current = root;
     for (int i = 0; i < path.size(); i++) {
